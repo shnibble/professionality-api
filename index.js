@@ -5,7 +5,7 @@ const childProcess = require('child_process')
 const GITHUB_WEBHOOK_SECRET = 'fD8xTzB6D42tAG4g432GQ#43g#$gq34g#Q%GQ35g3#%Gq2g365hQH'
 const GITHUB_USER = 'shnibble'
 
-app.get('/', (req, res) => res.send('Hello World v4'))
+app.get('/', (req, res) => res.send('Hello World v5'))
 
 app.post('/webhooks/github', (req, res) => {
     // const sender = req.body.sender
