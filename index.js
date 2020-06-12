@@ -32,7 +32,7 @@ const deploy = () => {
     })
 }
 
-app.get('/', (req, res) => res.send('Hello World v18'))
+app.get('/', (req, res) => res.send('Hello World v19'))
 app.get('/test', (req, res) => res.send('Test is okay.'))
 
 app.listen(port, () => console.log(`App is listening on port ${port}.`))
