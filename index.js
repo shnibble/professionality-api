@@ -1,29 +1,33 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const app = express()
 const port = 3000
 const childProcess = require('child_process')
 const GITHUB_WEBHOOK_SECRET = 'fD8xTzB6D42tAG4g432GQ#43g#$gq34g#Q%GQ35g3#%Gq2g365hQH'
-const GITHUB_USER = 'shnibble'
+const GithubWebHook = require('express-github-webhook')
+const webhookHandler = GithubWebHook({ path: '/webhooks/github', secret: GITHUB_WEBHOOK_SECRET })
 
-app.get('/', (req, res) => res.send('Hello World v6'))
+app.use(bodyParser.json())
+app.use(webhookHandler)
 
-app.post('/webhooks/github', (req, res) => {
-    // const sender = req.body.sender
-    // const branch = req.body.ref
+app.get('/', (req, res) => res.send('Hello World v7'))
 
-    // if (branch.indexOf('master') > -1 && sender.login === GITHUB_USER) {
-    //     deploy(res)
-    // }
-    res.send('okay')
+webhookHandler.on('*', (event, repo, data) => {
+    console.log('Incoming webhook event from Github.')
+
+    if (event === 'push' && data.ref === 'refs/heads/master') {
+        deploy()
+    }
 })
 
-const deploy = (res) => {
+const deploy = () => {
     childProcess.exec('cd ~/scripts && ./deploy.sh', (err, stdout, stderr) => {
         if (err) {
             console.error(err)
-            return res.send(500)
+        } else {
+            console.log('Successfully updated repo')
         }
-        res.send(200)
+        
     })
 }
 
