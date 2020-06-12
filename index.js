@@ -10,7 +10,6 @@ const webhookHandler = GithubWebHook({ path: '/webhooks/github', secret: GITHUB_
 app.use(bodyParser.json())
 app.use(webhookHandler)
 
-app.get('/', (req, res) => res.send('Hello World v13'))
 
 webhookHandler.on('*', (event, repo, data) => {
     console.log('Incoming webhook event from Github.')
@@ -30,5 +29,8 @@ const deploy = () => {
         
     })
 }
+
+app.get('/', (req, res) => res.send('Hello World v13'))
+app.get('/test', (req, res) => res.send('Test is okay.'))
 
 app.listen(port, () => console.log(`App is listening on port ${port}.`))
