@@ -10,7 +10,7 @@ const webhookHandler = GithubWebHook({ path: '/webhooks/github', secret: GITHUB_
 app.use(bodyParser.json())
 app.use(webhookHandler)
 
-app.get('/', (req, res) => res.send('Hello World v12'))
+app.get('/', (req, res) => res.send('Hello World v13'))
 
 webhookHandler.on('*', (event, repo, data) => {
     console.log('Incoming webhook event from Github.')
