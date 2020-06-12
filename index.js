@@ -8,7 +8,13 @@ const GITHUB_USER = 'shnibble'
 app.get('/', (req, res) => res.send('Hello World v3'))
 
 app.post('/webhooks/github', (req, res) => {
-    deploy(res)
+    // const sender = req.body.sender
+    // const branch = req.body.ref
+
+    // if (branch.indexOf('master') > -1 && sender.login === GITHUB_USER) {
+    //     deploy(res)
+    // }
+    res.send('okay')
 })
 
 const deploy = (res) => {
