@@ -6,8 +6,6 @@ const port = 3000
 const childProcess = require('child_process')
 const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET
 
-console.log('secret:', GITHUB_WEBHOOK_SECRET)
-
 const GithubWebHook = require('express-github-webhook')
 const webhookHandler = GithubWebHook({ path: '/webhooks/github', secret: GITHUB_WEBHOOK_SECRET })
 
@@ -34,7 +32,7 @@ const deploy = () => {
     })
 }
 
-app.get('/', (req, res) => res.send('Hello World v16'))
+app.get('/', (req, res) => res.send('Hello World v17'))
 app.get('/test', (req, res) => res.send('Test is okay.'))
 
 app.listen(port, () => console.log(`App is listening on port ${port}.`))
