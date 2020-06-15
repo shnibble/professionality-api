@@ -68,8 +68,13 @@ const login = (req, res, connection, bot) => {
                                         // create JWT
                                         const jwt = JWT.create(claims)
 
-                                        // return JWT to client
-                                        res.status(200).send(jwt)
+                                        // return response to client
+                                        res.status(200).json({
+                                            jwt,
+                                            member: is_member,
+                                            officer: is_officer,
+                                            nickname
+                                        })
                                     }
                                 })
                             } else {
@@ -93,7 +98,12 @@ const login = (req, res, connection, bot) => {
                             const jwt = JWT.create(claims)
 
                             // return JWT to client
-                            res.status(200).send(jwt)
+                            res.status(200).json({
+                                jwt,
+                                member: results[0].member,
+                                officer: results[0].officer,
+                                nickname: results[0].nickname
+                            })
                         }
                     }
                 })

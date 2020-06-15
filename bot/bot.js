@@ -1,9 +1,11 @@
 const Discord = require('discord.js')
 const moment = require('moment')
+const connection = require('../db/connect')
 const token = process.env.DISCORD_BOT_TOKEN
 const server_id = process.env.DISCORD_SERVER_ID
 const member_role_id = process.env.DISCORD_MEMBER_ROLE_ID
 const officer_role_id = process.env.DISCORD_OFFICER_ROLE_ID
+const officer_channel_id = process.env.DISCORD_OFFICER_CHANNEL_ID
 
 class Bot {
     constructor(connection) {
@@ -22,6 +24,7 @@ class Bot {
             .then(() => {
                 console.log('Professionality Discord bot has successfully logged in!')
                 this.#messages()
+                this.#listeners()
             })
             .catch((err) => {
                 console.log('Professionality Discord bot failed to login!')
@@ -36,6 +39,52 @@ class Bot {
         this.bot.on('ready', () => {
             console.log('Professionality Discord bot is ready!')
         })
+    }
+
+    #listeners = () => {
+        console.log('Professionality Discord bot is initiating listeners.')
+
+        // guild member update event listener
+        this.bot.on('guildMemberUpdate', member => {
+            const discord_user_id = member.user.id
+
+            const is_member = this.checkIfUserIsMember(discord_user_id)
+            const is_officer = this.checkIfUserIsOfficer(discord_user_id)
+            const nickname = this.getUserNickname(discord_user_id)
+
+            connection.execute('UPDATE `users` SET `member` = ?, `officer` = ?, `nickname` = ? WHERE `discord_user_id` = ?', [is_member, is_officer, nickname, discord_user_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+                    console.log(`User ${discord_user_id} (${nickname}) updated.`)
+                }
+            })
+            
+        })
+
+        // guild member left server event listener
+        this.bot.on('guildMemberRemove', member => {
+            const discord_user_id = member.user.id
+            const discord_username = member.user.username
+            const discord_discriminator = member.user.discriminator
+            
+            connection.execute('DELETE FROM `users` WHERE `discord_user_id` = ?', [discord_user_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+
+                    // report leave in server log
+                    console.log(`User ${discord_user_id} (${discord_username}#${discord_discriminator}) left the Discord server and has been deleted from the database.`)
+
+                    // report leave in discord officer channel
+                    this.bot.channels.cache.get(officer_channel_id).send(`User ${discord_user_id} (${discord_username}#${discord_discriminator}) left the Discord server.`)
+                }
+            })
+        })
+
+
     }
 
     #messages = () => {
