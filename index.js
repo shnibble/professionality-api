@@ -87,7 +87,7 @@ const deploy = () => {
     })
 }
 
-app.get('/', (req, res) => res.send('Professionality API v1'))
+app.get('/', (req, res) => res.send('Professionality API v2'))
 
 // account
 app.post('/account/login', (req, res) => accountController.login(req, res, connection, bot))
