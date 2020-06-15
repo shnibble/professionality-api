@@ -120,6 +120,35 @@ const login = (req, res, connection, bot) => {
     }
 }
 
+const verify = (req, res) => {
+
+    // validate parameters
+    const jwt = req.body.jwt
+    if (typeof jwt === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(data => {
+
+            // if invalid return 400
+            if (!data) {
+                res.status(400).send('Invalid token')
+
+            // else return the body of the jwt data
+            } else {
+                res.status(200).json({
+                    is_member: data.body.is_member,
+                    is_officer: data.body.is_officer,
+                    nickname: data.body.nickname
+                })
+            }
+        })
+    }
+}
+
 module.exports = {
-    login
+    login,
+    verify
 }
