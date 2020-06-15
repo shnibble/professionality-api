@@ -1,4 +1,5 @@
 require('dotenv').config()
+const cors = require('cors')
 const express = require('express')
 const bodyParser = require('body-parser')
 const childProcess = require('child_process')
@@ -62,6 +63,7 @@ const webhookHandler = GithubWebHook({ path: '/webhooks/github', secret: GITHUB_
 
 // initialize express
 const app = express()
+app.use(cors())
 app.use(bodyParser.urlencoded())
 app.use(bodyParser.json())
 app.use(webhookHandler)
