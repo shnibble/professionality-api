@@ -1,10 +1,13 @@
 const Discord = require('discord.js')
+const moment = require('moment')
 const token = process.env.DISCORD_BOT_TOKEN
 const server_id = process.env.DISCORD_SERVER_ID
 const member_role_id = process.env.DISCORD_MEMBER_ROLE_ID
+const officer_role_id = process.env.DISCORD_OFFICER_ROLE_ID
 
 class Bot {
-    constructor() {
+    constructor(connection) {
+        this.connection = connection
         this.#login()
 
         // the bot's message prefix when typing into the discord server chat
@@ -59,27 +62,10 @@ class Bot {
 
                     // display calendar
                     case 'events':
-                    case 'calendar':
                     case 'Events':
+                    case 'calendar':
                     case 'Calendar':
-                        const embed = new Discord.MessageEmbed()
-                            .setColor('#0099ff')
-                            .addFields(
-                                {
-                                    name: 'Molten Core - 06/11/2020 @ 8:00 PM',
-                                    value: 'https://professionality.app/event/1'
-                                },
-                                {
-                                    name: 'Onyxia - 06/12/2020 @ 8:00 PM',
-                                    value: 'https://professionality.app/event/2'
-                                },
-                                {
-                                    name: 'Zul\'Gurub - 06/12/2020 @ 9:00 PM',
-                                    value: 'https://professionality.app/event/3'
-                                }
-                            )            
-                        message.reply('Here are the next few events on the calendar:')
-                        message.channel.send(embed)
+                        this.getNextThreeEvents(message)
                         break
 
                     default:
@@ -94,27 +80,84 @@ class Bot {
 
     }
 
+    // pulls the next three future events from db and displays them in an embeded reply to user
+    getNextThreeEvents = (message) => {
+        this.connection.query('SELECT * FROM `events` WHERE `start` > NOW() ORDER BY `start` LIMIT 3', (err, results, fields) => {
+
+            if (err) {
+                console.error(err)
+                message.reply('Sorry! Something went wrong and I couldn\'t find any events.')
+            } else {
+
+                if (results.length === 0) {
+                    message.reply('There are no future events on the calendar right now.')
+                } else {
+                    const embed = new Discord.MessageEmbed()
+                    .setColor('#0099ff')
+
+                    results.forEach(event => {
+                        const date = moment(event.start)
+                        embed.addField(`${event.title} - ${date.format('dddd MM/DD @ h:mm a')}`, `https://professionality.app/event/${event.id}`)
+                    })
+                            
+                    message.reply('Here are the next three events on the calendar:')
+                    message.channel.send(embed)
+                }
+            }
+        })
+    }
+
     // check if user exists on the Professionality Discord server
     checkIfUserExists = (user_id) => {
-        console.log(`Checking if guild member exists with UID: ${user_id}.`)
         const guild = this.bot.guilds.cache.get(server_id)
     
-        const m = guild.member(user_id)
-        if (m) {
-            console.log('That user exists in this server!')
-            this.checkIfUserIsMember(m)
+        const member = guild.member(user_id)
+        if (member) {
+            return true
         } else {
-            console.log('That user doesn\'t exist on this server!')
+            return false
         }
     }
     
     // check if a user has the @member role
-    checkIfUserIsMember = (member) => {
-        if (member._roles.indexOf(member_role_id) > -1) {
-            console.log('That user is also a member!')
-        } else {
-            console.log('That user is not a member!')
+    checkIfUserIsMember = (user_id) => {
+        const guild = this.bot.guilds.cache.get(server_id)
+
+        const member = guild.member(user_id)
+        if (member) {
+            if (member._roles.indexOf(member_role_id) > -1) {
+                return true
+            }
         }
+        return false
+    }
+
+    // check if a user has the @officer role
+    checkIfUserIsOfficer = (user_id) => {
+        const guild = this.bot.guilds.cache.get(server_id)
+
+        const member = guild.member(user_id)
+        if (member) {
+            if (member._roles.indexOf(officer_role_id) > -1) {
+                return true
+            }
+        }
+        return false
+    }
+
+    // get discord member nickname
+    getUserNickname = (user_id) => {
+        const guild = this.bot.guilds.cache.get(server_id)
+
+        const member = guild.member(user_id)
+        if (member) {
+            let nickname = member.nickname
+            if (nickname === null) {
+                nickname = member.user.username
+            }
+            return nickname
+        }
+        return false
     }
 }
 
