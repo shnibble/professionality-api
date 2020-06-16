@@ -171,20 +171,19 @@ const get = (req, res, connection) => {
                     let user = results[0]
 
                     // get characters
-                    connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [discord_user_id], (err, results, fields) => {
-                        if (err) {
+                    connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [discord_user_id], (err2, results2, fields2) => {
+                        if (err2) {
                             console.error(err)
                             res.status(500).send('Server error')
                         } else {
 
                             // add characters to user data structure
-                            user.characters = results[0]
+                            user.characters = results2
 
                             // return user
                             res.status(200).json(user)
                         }
                     })
-                    res.status(200).json(results[0])
                 }
             }
         })
