@@ -151,7 +151,7 @@ const verify = (req, res) => {
 const get = (req, res, connection) => {
 
     // validate parameters
-    const discord_user_id = req.body.discord_user_id
+    const discord_user_id = req.query.discord_user_id
     if (typeof discord_user_id === 'undefined') {
         res.status(400).send('Bad request')
     } else {
