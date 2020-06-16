@@ -153,7 +153,7 @@ const get = (req, res, connection) => {
     // validate parameters
     const discord_user_id = req.body.discord_user_id
     if (typeof discord_user_id === 'undefined') {
-        res.state.(400).send('Bad request')
+        res.status(400).send('Bad request')
     } else {
 
         // get user
