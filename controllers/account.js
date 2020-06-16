@@ -167,6 +167,23 @@ const get = (req, res, connection) => {
                 if (results.length === 0) {
                     res.status(400).send('User does not exist')
                 } else {
+
+                    let user = results[0]
+
+                    // get characters
+                    connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [discord_user_id], (err, results, fields) => {
+                        if (err) {
+                            console.error(err)
+                            res.status(500).send('Server error')
+                        } else {
+
+                            // add characters to user data structure
+                            user.characters = results[0]
+
+                            // return user
+                            res.status(200).json(user)
+                        }
+                    })
                     res.status(200).json(results[0])
                 }
             }
