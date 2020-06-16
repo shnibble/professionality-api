@@ -148,7 +148,34 @@ const verify = (req, res) => {
     }
 }
 
+const get = (req, res, connection) => {
+
+    // validate parameters
+    const discord_user_id = req.body.discord_user_id
+    if (typeof discord_user_id === 'undefined') {
+        res.state.(400).send('Bad request')
+    } else {
+
+        // get user
+        connection.execute('SELECT `discord_user_id`, `nickname`, `member`, `officer` FROM `users` WHERE `discord_user_id` = ?', [discord_user_id], (err, results, fields) => {
+            if (err) {
+                console.error(err)
+                res.status(500).send('Server error')
+            } else {
+
+                // check if empty results
+                if (results.length === 0) {
+                    res.status(400).send('User does not exist')
+                } else {
+                    res.status(200).json(results[0])
+                }
+            }
+        })
+    }
+}
+
 module.exports = {
     login,
-    verify
+    verify,
+    get
 }

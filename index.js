@@ -92,5 +92,6 @@ app.get('/', (req, res) => res.send('Professionality API v2'))
 // account
 app.post('/account/login', (req, res) => accountController.login(req, res, connection, bot))
 app.post('/account/verify', (req, res) => accountController.verify(req, res))
+app.post('/account/get', (req, res) => accountController.get(req, res, connection))
 
 app.listen(port, () => console.log(`Professionality-api is listening on port ${port}.`))
