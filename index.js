@@ -8,6 +8,7 @@ const port = 3000
 
 // controllers
 const accountController = require('./controllers/account')
+const characterController = require('./controllers/character')
 
 // initialize db connection
 const connection = require('./db/connect')
@@ -93,5 +94,10 @@ app.get('/', (req, res) => res.send('Professionality API v2'))
 app.post('/account/login', (req, res) => accountController.login(req, res, connection, bot))
 app.post('/account/verify', (req, res) => accountController.verify(req, res))
 app.get('/account/get', (req, res) => accountController.get(req, res, connection))
+
+// character
+app.post('/character/edit/race', (req, res) => characterController.editRace(req, res, connection))
+// app.post('/character/edit/class', (req, res) => characterController.editClass(req, res, connection))
+// app.post('/character/edit/role', (req, res) => characterController.editRole(req, res, connection))
 
 app.listen(port, () => console.log(`Professionality-api is listening on port ${port}.`))

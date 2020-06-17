@@ -60,8 +60,8 @@ const login = (req, res, connection, bot) => {
                                         // declare JWT variables
                                         const claims = {
                                             discord_user_id,
-                                            member: is_member,
-                                            officer: is_officer,
+                                            is_member,
+                                            is_officer,
                                             nickname
                                         }
 
@@ -71,8 +71,9 @@ const login = (req, res, connection, bot) => {
                                         // return response to client
                                         res.status(200).json({
                                             jwt,
-                                            member: is_member,
-                                            officer: is_officer,
+                                            discord_user_id,
+                                            is_member,
+                                            is_officer,
                                             nickname
                                         })
                                     }
@@ -89,8 +90,8 @@ const login = (req, res, connection, bot) => {
                             // declare JWT variables
                             const claims = {
                                 discord_user_id,
-                                member: results[0].member,
-                                officer: results[0].officer,
+                                is_member: results[0].member,
+                                is_officer: results[0].officer,
                                 nickname: results[0].nickname
                             }
 
@@ -100,8 +101,9 @@ const login = (req, res, connection, bot) => {
                             // return JWT to client
                             res.status(200).json({
                                 jwt,
-                                member: results[0].member,
-                                officer: results[0].officer,
+                                discord_user_id,
+                                is_member: results[0].member,
+                                is_officer: results[0].officer,
                                 nickname: results[0].nickname
                             })
                         }
@@ -139,6 +141,7 @@ const verify = (req, res) => {
             // else return the body of the jwt data
             } else {
                 res.status(200).json({
+                    discord_user_id: data.body.discord_user_id,
                     is_member: data.body.is_member,
                     is_officer: data.body.is_officer,
                     nickname: data.body.nickname
