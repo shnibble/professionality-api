@@ -5,7 +5,7 @@ const editRace = (req, res, connection) => {
     // validate parameters
     const { jwt, character_id, race_id } = req.body
     if (typeof jwt === 'undefined' || typeof character_id === 'undefined' || typeof race_id === 'undefined') {
-        res.status(400).send('Bad request')
+        res.status(400).send('Bad request 1')
     } else {
 
         // verify jwt
@@ -26,12 +26,12 @@ const editRace = (req, res, connection) => {
 
                         // confirm character exists
                         if (results.length === 0) {
-                            res.status(400).send('Bad request')
+                            res.status(400).send('Bad request 2')
                         } else {
 
                             // confirm character belongs to user
                             if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
-                                res.status(400).send('Bad request') 
+                                res.status(400).send('Bad request 3') 
                             } else {
 
                                 // update character
