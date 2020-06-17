@@ -18,11 +18,14 @@ const editRace = (req, res, connection) => {
             } else {
 
                 // get character discord user id
-                connection.execute('SELECT `discord_user_id` FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
+                connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
                     if (err) {
                         console.error(err)
                         res.status(500).send('Server error')
                     } else {
+
+                        // console log results
+                        console.log(results)
 
                         // confirm character exists
                         if (results.length === 0) {
