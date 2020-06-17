@@ -31,7 +31,7 @@ const editRace = (req, res, connection) => {
 
                             // confirm character belongs to user
                             if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
-                                res.status(400).send('Bad request 3') 
+                                res.status(400).send(`${jwt_data.body.discord_user_id} does not equal ${results[0].discord_user_id}`) 
                             } else {
 
                                 // update character
