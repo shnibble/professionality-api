@@ -212,12 +212,14 @@ const editProfessions = (req, res, connection) => {
 
     // validate parameters
     const { jwt, character_id, profession_id_one, profession_id_two } = req.body
+
+    console.log('Incoming req.body:', req.body)
     
     // cleanup data
-    if (typeof profession_id_one === 'undefined' || profession_id_one === null) {
+    if (typeof profession_id_one === 'undefined' || profession_id_one === null || !profession_id_one) {
         profession_id_one = 'NULL'
     }
-    if (typeof profession_id_two === 'undefined' || profession_id_two === null) {
+    if (typeof profession_id_two === 'undefined' || profession_id_two === null || !profession_id_two) {
         profession_id_two = 'NULL'
     }
 
