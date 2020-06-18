@@ -1,5 +1,36 @@
 const JWT = require('../util/jwt')
 
+const add = (req, res, connection) => {
+
+    // validate parameters
+    const { jwt, character_name } = req.body
+    if (typeof jwt === 'undefined' || typeof character_name === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // if invalid return 400
+            if (!jwt_data) {
+                res.status(400).send('Invalid token')
+            } else {
+
+                // insert new character
+                connection.execute('INSERT INTO characters (`discord_user_id`, `name`) VALUES (?, ?)', [jwt_data.body.discord_user_id, character_name], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        res.status(200).send('Success')
+                    }
+                })
+            }
+        })
+    }
+}
+
 const editRace = (req, res, connection) => {
 
     // validate parameters
@@ -271,6 +302,7 @@ const editProfessions = (req, res, connection) => {
 }
 
 module.exports = {
+    add,
     editRace,
     editClass,
     editRole,
