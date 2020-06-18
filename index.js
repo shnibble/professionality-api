@@ -97,6 +97,7 @@ app.get('/account/get', (req, res) => accountController.get(req, res, connection
 
 // character
 app.post('/character/add', (req, res) => characterController.add(req, res, connection))
+app.post('/character/delete', (req, res) => characterController.deleteCharacter(req, res, connection))
 app.post('/character/edit/race', (req, res) => characterController.editRace(req, res, connection))
 app.post('/character/edit/class', (req, res) => characterController.editClass(req, res, connection))
 app.post('/character/edit/role', (req, res) => characterController.editRole(req, res, connection))
