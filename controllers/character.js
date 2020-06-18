@@ -211,7 +211,8 @@ const editAttunements = (req, res, connection) => {
 const editProfessions = (req, res, connection) => {
 
     // validate parameters
-    const { jwt, character_id, profession_id_one, profession_id_two } = req.body
+    const { jwt, character_id } = req.body
+    let { profession_id_one, profession_id_two } = req.body
     
     // cleanup data
     if (typeof profession_id_one === 'undefined' || profession_id_one === null || !profession_id_one || profession_id_one === 'None') {
