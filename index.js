@@ -9,6 +9,7 @@ const port = 3000
 // controllers
 const accountController = require('./controllers/account')
 const characterController = require('./controllers/character')
+const rosterController = require('./controllers/roster')
 
 // initialize db connection
 const connection = require('./db/connect')
