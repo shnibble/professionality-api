@@ -212,7 +212,16 @@ const editProfessions = (req, res, connection) => {
 
     // validate parameters
     const { jwt, character_id, profession_id_one, profession_id_two } = req.body
-    if (typeof jwt === 'undefined' || typeof character_id === 'undefined' || typeof profession_id_one === 'undefined' || typeof profession_id_two === 'undefined') {
+    
+    // cleanup data
+    if (typeof profession_id_one === 'undefined' || profession_id_one === null) {
+        profession_id_one = 'NULL'
+    }
+    if (typeof profession_id_two === 'undefined' || profession_id_two === null) {
+        profession_id_two = 'NULL'
+    }
+
+    if (typeof jwt === 'undefined' || typeof character_id === 'undefined') {
         res.status(400).send('Bad request')
     } else {
 
