@@ -100,5 +100,6 @@ app.post('/character/edit/race', (req, res) => characterController.editRace(req,
 app.post('/character/edit/class', (req, res) => characterController.editClass(req, res, connection))
 app.post('/character/edit/role', (req, res) => characterController.editRole(req, res, connection))
 app.post('/character/edit/attunements', (req, res) => characterController.editAttunements(req, res, connection))
+app.post('/character/edit/professions', (req, res) => characterController.editProfessions(req, res, connection))
 
 app.listen(port, () => console.log(`Professionality-api is listening on port ${port}.`))
