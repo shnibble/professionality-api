@@ -8,8 +8,11 @@ const port = 3000
 
 // controllers
 const accountController = require('./controllers/account')
+const attendanceController = require('./controllers/attendance')
+const calendarController = require('./controllers/calendar')
 const characterController = require('./controllers/character')
 const rosterController = require('./controllers/roster')
+
 
 // initialize db connection
 const connection = require('./db/connect')
@@ -17,47 +20,6 @@ const connection = require('./db/connect')
 // initialize discord bot
 const Bot = require('./bot/bot')
 const bot = new Bot(connection)
-
-
-
-
-
-// TESTING
-// setTimeout(() => {
-//     if(bot.checkIfUserExists('261539339878662146')) {
-//         console.log('Users does exist')
-//     } else {
-//         console.log('User does not exist')
-//     }
-// }, 1000)
-
-// setTimeout(() => {
-//     if(bot.checkIfUserIsMember('261539339878662146')) {
-//         console.log('Users is a @member')
-//     } else {
-//         console.log('User is not a @member')
-//     }
-// }, 2000)
-
-// setTimeout(() => {
-//     if(bot.checkIfUserIsOfficer('261539339878662146')) {
-//         console.log('Users is a @officer')
-//     } else {
-//         console.log('User is not a @officer')
-//     }
-// }, 3000)
-
-// setTimeout(() => {
-//     const nickname = bot.getUserNickname('261539339878662146')
-//     console.log('User nickname is:', nickname)
-
-// }, 4000)
-// TESTING
-
-
-
-
-
 
 // initialize github webhook
 const GithubWebHook = require('express-github-webhook')
@@ -95,6 +57,16 @@ app.get('/', (req, res) => res.send('Professionality API v2'))
 app.post('/account/login', (req, res) => accountController.login(req, res, connection, bot))
 app.post('/account/verify', (req, res) => accountController.verify(req, res))
 app.get('/account/get', (req, res) => accountController.get(req, res, connection))
+
+// attendance
+app.post('/attendance/signup', (req, res) => attendanceController.signup(req, res, connection))
+app.post('/attendance/callout', (req, res) => attendanceController.callout(req, res, connection))
+app.post('/attendance/cancel', (req, res) => attendanceController.cancel(req, res, connection))
+
+// calendar
+app.get('/calendar/get', (req, res) => calendarHandler.get(req, res, connection))
+app.post('/calendar/add', (req, res) => calendarHandler.add(req, res, connection))
+app.post('/calendar/delete', (req, res) => calendarHandler.deleteEvent(req, res, connection))
 
 // character
 app.post('/character/add', (req, res) => characterController.add(req, res, connection))
