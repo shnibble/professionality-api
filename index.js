@@ -64,9 +64,9 @@ app.post('/attendance/callout', (req, res) => attendanceController.callout(req, 
 app.post('/attendance/cancel', (req, res) => attendanceController.cancel(req, res, connection))
 
 // calendar
-app.get('/calendar/get', (req, res) => calendarHandler.get(req, res, connection))
-app.post('/calendar/add', (req, res) => calendarHandler.add(req, res, connection))
-app.post('/calendar/delete', (req, res) => calendarHandler.deleteEvent(req, res, connection))
+app.get('/calendar/get', (req, res) => calendarController.get(req, res, connection))
+app.post('/calendar/add', (req, res) => calendarController.add(req, res, connection))
+app.post('/calendar/delete', (req, res) => calendarController.deleteEvent(req, res, connection))
 
 // character
 app.post('/character/add', (req, res) => characterController.add(req, res, connection))
