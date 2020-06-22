@@ -5,6 +5,8 @@ const getPugs = (req, res, connection) => {
             res.status(500).send('Server error')
         } else {
             let final_results = []
+            let pending = results.length
+            
             results.map(row => {
                 connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
                     row.characters = result
@@ -26,6 +28,8 @@ const getMembers = (req, res, connection) => {
             res.status(500).send('Server error')
         } else {
             let final_results = []
+            let pending = results.length
+
             results.map(row => {
                 connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
                     row.characters = result
