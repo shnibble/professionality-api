@@ -6,7 +6,7 @@ const getPugs = (req, res, connection) => {
         } else {
             let final_results = []
             results.map(row => {
-                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.id], (err, result, fields) => {
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.discord_user_id], (err, result, fields) => {
                     row.characters = result
                     final_results.push(row)
                 })
@@ -24,7 +24,7 @@ const getMembers = (req, res, connection) => {
         } else {
             let final_results = []
             results.map(row => {
-                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.id], (err, result, fields) => {
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.discord_user_id], (err, result, fields) => {
                     row.characters = result
                     final_results.push(row)
                 })
@@ -42,7 +42,7 @@ const getOfficers = (req, res, connection) => {
         } else {
             let final_results = []
             results.map(row => {
-                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.id], (err, result, fields) => {
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.discord_user_id], (err, result, fields) => {
                     row.characters = result
                     final_results.push(row)
                 })
