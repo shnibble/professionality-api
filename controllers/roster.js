@@ -4,7 +4,14 @@ const getPugs = (req, res, connection) => {
             console.error(err)
             res.status(500).send('Server error')
         } else {
-            res.status(200).json(results)
+            let final_results = []
+            results.map(row => {
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.id], (err, result, fields) => {
+                    row.characters = result
+                    final_results.push(row)
+                })
+            })
+            res.status(200).json(final_results)
         }
     })
 }
@@ -15,7 +22,14 @@ const getMembers = (req, res, connection) => {
             console.error(err)
             res.status(500).send('Server error')
         } else {
-            res.status(200).json(results)
+            let final_results = []
+            results.map(row => {
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.id], (err, result, fields) => {
+                    row.characters = result
+                    final_results.push(row)
+                })
+            })
+            res.status(200).json(final_results)
         }
     })
 }
@@ -26,7 +40,14 @@ const getOfficers = (req, res, connection) => {
             console.error(err)
             res.status(500).send('Server error')
         } else {
-            res.status(200).json(results)
+            let final_results = []
+            results.map(row => {
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.id], (err, result, fields) => {
+                    row.characters = result
+                    final_results.push(row)
+                })
+            })
+            res.status(200).json(final_results)
         }
     })
 }
