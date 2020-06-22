@@ -6,9 +6,7 @@ const getPugs = (req, res, connection) => {
         } else {
             let final_results = []
             results.map(row => {
-                console.log('Searching characters for DUI: ', row.discord_user_id)
-                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.discord_user_id], (err, result, fields) => {
-                    console.log('Result:', result)
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
                     row.characters = result
                     final_results.push(row)
                 })
@@ -26,9 +24,7 @@ const getMembers = (req, res, connection) => {
         } else {
             let final_results = []
             results.map(row => {
-                console.log('Searching characters for DUI: ', row.discord_user_id)
-                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.discord_user_id], (err, result, fields) => {
-                    console.log('Result:', result)
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
                     row.characters = result
                     final_results.push(row)
                 })
@@ -47,9 +43,10 @@ const getOfficers = (req, res, connection) => {
             let final_results = []
             results.map(row => {
                 console.log('Searching characters for DUI: ', row.discord_user_id)
-                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ?', [row.discord_user_id], (err, result, fields) => {
-                    console.log('Result:', result)
+                connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
+                    console.log('result:', result)
                     row.characters = result
+                    console.log('row:', row)
                     final_results.push(row)
                 })
             })
