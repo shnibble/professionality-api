@@ -35,13 +35,13 @@ const getMembers = (req, res, connection) => {
 }
 
 const getOfficers = (req, res, connection) => {
-    connection.query('SELECT * FROM `users` WHERE `member` = TRUE AND `officer` = TRUE ORDER BY `nickname`', (err, results, fields) => {
+    connection.query('SELECT * FROM `users` WHERE `member` = TRUE AND `officer` = TRUE ORDER BY `nickname`', async (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
         } else {
             let final_results = []
-            results.map(row => {
+            await results.map(row => {
                 console.log('Searching characters for DUI: ', row.discord_user_id)
                 connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
                     console.log('result:', result)
@@ -50,6 +50,7 @@ const getOfficers = (req, res, connection) => {
                     final_results.push(row)
                 })
             })
+            console.log('returning results')
             res.status(200).json(final_results)
         }
     })
