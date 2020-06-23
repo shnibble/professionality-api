@@ -4,6 +4,20 @@ const signup = (req, res, connection) => {
     
     // validate parameters
     const { jwt, event_id, character_id, role_id, tentative, late, note } = req.body
+    let { tentative, late } = req.body
+
+    // clean up boolean values
+    if (tentative === true || tentative === 'true') {
+        tentative = true
+    } else {
+        tentative = false
+    }
+    if (late === true || late === 'true') {
+        late = true
+    } else {
+        late = false
+    }
+
     if (typeof jwt === 'undefined' || typeof event_id === 'undefined'  || typeof character_id === 'undefined' || typeof role_id === 'undefined' || typeof tentative === 'undefined' || typeof late === 'undefined') {
         res.status(400).send('Bad request')
     } else {
