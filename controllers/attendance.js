@@ -3,7 +3,7 @@ const JWT = require('../util/jwt')
 const signup = (req, res, connection) => {
     
     // validate parameters
-    const { jwt, event_id, character_id, role_id, tentative, late, note } = req.body
+    const { jwt, event_id, character_id, role_id, note } = req.body
     let { tentative, late } = req.body
 
     // clean up boolean values
