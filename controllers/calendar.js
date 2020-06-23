@@ -1,7 +1,51 @@
 const JWT = require('../util/jwt')
 
 const get = (req, res, connection) => {
-    connection.query( 'SELECT e.*, (SELECT COUNT(*) FROM `attendance` WHERE `event_id` = e.`id` AND `discord_user_id` IN (SELECT `discord_user_id` FROM `users`) AND `signed_up` IS NOT NULL) AS `total_sign_ups`, (SELECT COUNT(*) FROM `attendance` WHERE `event_id` = e.`id` AND `discord_user_id` IN (SELECT `discord_user_id` FROM `users`) AND `called_out` IS NOT NULL) AS `total_call_outs`, (SELECT COUNT(*) FROM `attendance` WHERE `event_id` = e.`id` AND `discord_user_id` IN (SELECT `discord_user_id` FROM `users`) AND `signed_up` IS NOT NULL AND `role_id` = 1) AS `total_casters`, (SELECT COUNT(*) FROM `attendance` WHERE `event_id` = e.`id` AND `discord_user_id` IN (SELECT `discord_user_id` FROM `users`) AND `signed_up` IS NOT NULL AND `role_id` = 2) AS `total_fighters`, (SELECT COUNT(*) FROM `attendance` WHERE `event_id` = e.`id` AND `discord_user_id` IN (SELECT `discord_user_id` FROM `users`) AND `signed_up` IS NOT NULL AND `role_id` = 3) AS `total_healers`, (SELECT COUNT(*) FROM `attendance` WHERE `event_id` = e.`id` AND `discord_user_id` IN (SELECT `discord_user_id` FROM `users`) AND `signed_up` IS NOT NULL AND `role_id` = 4) AS `total_tanks` FROM `events` e WHERE e.`start` >= NOW() ORDER BY e.`start`', (err, results, fields) => {
+
+    const discord_user_id = req.query.discord_user_id || null
+
+    connection.execute( 
+        `
+        SELECT e.*, a.signed_up, a.called_out, a.character_id, a.role_id, a.tentative, a.late, a.note,
+		(SELECT COUNT(*) FROM attendance 
+            WHERE event_id = e.id 
+            AND discord_user_id IN (SELECT discord_user_id FROM users) 
+            AND signed_up IS NOT NULL) 
+            AS total_sign_ups, 
+        (SELECT COUNT(*) FROM attendance 
+            WHERE event_id = e.id 
+            AND discord_user_id IN (SELECT discord_user_id FROM users) 
+            AND called_out IS NOT NULL) 
+            AS total_call_outs, 
+        (SELECT COUNT(*) FROM attendance 
+            WHERE event_id = e.id 
+            AND discord_user_id IN (SELECT discord_user_id FROM users) 
+            AND signed_up IS NOT NULL 
+            AND role_id = 1) 
+            AS total_casters, 
+        (SELECT COUNT(*) FROM attendance 
+            WHERE event_id = e.id 
+            AND discord_user_id IN (SELECT discord_user_id FROM users) 
+            AND signed_up IS NOT NULL AND role_id = 2) 
+            AS total_fighters, 
+        (SELECT COUNT(*) FROM attendance 
+            WHERE event_id = e.id 
+            AND discord_user_id IN (SELECT discord_user_id FROM users) 
+            AND signed_up IS NOT NULL 
+            AND role_id = 3) 
+            AS total_healers, 
+        (SELECT COUNT(*) FROM attendance 
+            WHERE event_id = e.id 
+            AND discord_user_id IN (SELECT discord_user_id FROM users) 
+            AND signed_up IS NOT NULL 
+            AND role_id = 4) 
+            AS total_tanks 
+        FROM events e 
+        LEFT JOIN attendance a
+        	ON e.id =  a.event_id AND a.discord_user_id = ?
+        WHERE e.start >= NOW() ORDER BY e.start
+        `
+        [discord_user_id], (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
