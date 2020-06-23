@@ -3,10 +3,8 @@ const JWT = require('../util/jwt')
 const get = (req, res, connection) => {
 
     const discord_user_id = req.query.discord_user_id || null
-    console.log('incoming req:', req)
-    console.log('discord_user_id:', discord_user_id)
 
-    connection.execute( 
+    connection.query( 
         `
         SELECT e.*, a.signed_up, a.called_out, a.character_id, a.role_id, a.tentative, a.late, a.note,
 		(SELECT COUNT(*) FROM attendance 
@@ -46,7 +44,7 @@ const get = (req, res, connection) => {
         LEFT JOIN attendance a
         	ON e.id =  a.event_id AND a.discord_user_id = ?
         WHERE e.start >= NOW() ORDER BY e.start
-        `
+        `,
         [discord_user_id], (err, results, fields) => {
         if (err) {
             console.error(err)
