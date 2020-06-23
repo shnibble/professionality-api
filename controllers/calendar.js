@@ -3,6 +3,8 @@ const JWT = require('../util/jwt')
 const get = (req, res, connection) => {
 
     const discord_user_id = req.query.discord_user_id || null
+    console.log('incoming req:', req)
+    console.log('discord_user_id:', discord_user_id)
 
     connection.execute( 
         `
