@@ -177,6 +177,9 @@ class Bot {
         const guild = this.bot.guilds.cache.get(server_id)
 
         const member = guild.member(user_id)
+        console.log('checking if user is member')
+        console.log('user roles:', member._roles)
+        console.log('looking for role id:', member_role_id)
         if (member) {
             if (member._roles.indexOf(member_role_id) > -1) {
                 console.log('user is member')
