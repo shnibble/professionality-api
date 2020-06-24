@@ -79,7 +79,7 @@ app.post('/character/edit/attunements', (req, res) => characterController.editAt
 app.post('/character/edit/professions', (req, res) => characterController.editProfessions(req, res, connection))
 
 // event
-app.get('event/get', (req, res) => eventController.get(req, res, connection))
+app.get('/event/get', (req, res) => eventController.get(req, res, connection))
 
 // roster
 app.get('/roster/pugs', (req, res) => rosterController.getPugs(req, res, connection))
