@@ -146,7 +146,7 @@ class Bot {
 
                     results.forEach(event => {
                         const date = moment(event.start)
-                        embed.addField(`${event.title} - ${date.format('dddd MM/DD @ h:mm a')}`, `https://professionality.app/event/${event.id}`)
+                        embed.addField(`${event.title} - ${date.local().format('dddd MM/DD @ h:mm a')}`, `https://professionality.app/event/${event.id}`)
                     })
                             
                     message.reply('Here are the next three events on the calendar:')
