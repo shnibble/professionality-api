@@ -68,7 +68,7 @@ const get = (req, res, connection) => {
                         FROM attendance a
                         INNER JOIN users u
                             ON a.discord_user_id = u.discord_user_id
-                        INNER JOIN characters c
+                        LEFT JOIN characters c
                             ON a.character_id = c.id
                         WHERE a.event_id = ? AND a.discord_user_id IN (SELECT discord_user_id FROM users) 
                         `, [event_id], (err, results, fields) => {
