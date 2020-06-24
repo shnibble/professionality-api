@@ -48,8 +48,6 @@ class Bot {
         this.bot.on('guildMemberUpdate', member => {
             const discord_user_id = member.user.id
 
-            console.log('user update for uid:', discord_user_id)
-
             const is_member = this.checkIfUserIsMember(discord_user_id)
             const is_officer = this.checkIfUserIsOfficer(discord_user_id)
             const nickname = this.getUserNickname(discord_user_id)
@@ -164,10 +162,8 @@ class Bot {
     
         const member = guild.member(user_id)
         if (member) {
-            console.log('user does exist on the server')
             return true
         } else {
-            console.log('user does NOT exist on the server')
             return false
         }
     }
@@ -177,16 +173,11 @@ class Bot {
         const guild = this.bot.guilds.cache.get(server_id)
 
         const member = guild.member(user_id)
-        console.log('checking if user is member')
-        console.log('user roles:', member._roles)
-        console.log('looking for role id:', member_role_id)
         if (member) {
             if (member._roles.indexOf(member_role_id) > -1) {
-                console.log('user is member')
                 return true
             }
         }
-        console.log('user is NOT member')
         return false
     }
 
@@ -197,11 +188,9 @@ class Bot {
         const member = guild.member(user_id)
         if (member) {
             if (member._roles.indexOf(officer_role_id) > -1) {
-                console.log('user is officer')
                 return true
             }
         }
-        console.log('user is NOT officer')
         return false
     }
 
@@ -215,7 +204,6 @@ class Bot {
             if (nickname === null) {
                 nickname = member.user.username
             }
-            console.log('user nickname:', nickname)
             return nickname
         }
         return false
