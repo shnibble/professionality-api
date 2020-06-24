@@ -70,7 +70,7 @@ const get = (req, res, connection) => {
                             ON a.discord_user_id = u.discord_user_id
                         LEFT JOIN characters c
                             ON a.character_id = c.id
-                        WHERE a.event_id = ? AND a.discord_user_id IN (SELECT discord_user_id FROM users) 
+                        WHERE a.event_id = ? AND a.discord_user_id IN (SELECT discord_user_id FROM users) ORDER BY a.signed_up, a.called_out
                         `, [event_id], (err, results, fields) => {
                         if (err) {
                             res.status(500).send('Server error')
