@@ -6,6 +6,7 @@ const server_id = process.env.DISCORD_SERVER_ID
 const member_role_id = process.env.DISCORD_MEMBER_ROLE_ID
 const officer_role_id = process.env.DISCORD_OFFICER_ROLE_ID
 const officer_channel_id = process.env.DISCORD_OFFICER_CHANNEL_ID
+require('moment-timezone')
 
 class Bot {
     constructor(connection) {
