@@ -12,6 +12,7 @@ const attendanceController = require('./controllers/attendance')
 const calendarController = require('./controllers/calendar')
 const characterController = require('./controllers/character')
 const eventController = require('./controllers/event')
+const itemsController = require('./controllers/items')
 const rosterController = require('./controllers/roster')
 
 
@@ -81,6 +82,9 @@ app.post('/character/edit/professions', (req, res) => characterController.editPr
 
 // event
 app.get('/event/get', (req, res) => eventController.get(req, res, connection))
+
+// items
+app.get('/items/get', (req, res) => itemsController.get(req, res, connection))
 
 // roster
 app.get('/roster/pugs', (req, res) => rosterController.getPugs(req, res, connection))
