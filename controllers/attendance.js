@@ -42,7 +42,7 @@ const signup = (req, res, connection) => {
                         } else {
 
                             // confirm event exists
-                            connection.execute('SELECT * FROM `events` WHERE event_id = ?', [event_id], (err, results, fields) => {
+                            connection.execute('SELECT * FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
                                 if (err) {
                                     console.error(err)
                                     res.status(500).send('Server error')
@@ -122,7 +122,7 @@ const callout = (req, res, connection) => {
             } else {
 
                 // confirm event exists
-                connection.execute('SELECT * FROM `events` WHERE event_id = ?', [event_id], (err, results, fields) => {
+                connection.execute('SELECT * FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
                     if (err) {
                         console.error(err)
                         res.status(500).send('Server error')
@@ -200,7 +200,7 @@ const cancel = (req, res, connection) => {
             } else {
 
                 // confirm event exists
-                connection.execute('SELECT * FROM `events` WHERE event_id = ?', [event_id], (err, results, fields) => {
+                connection.execute('SELECT * FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
                     if (err) {
                         console.error(err)
                         res.status(500).send('Server error')
