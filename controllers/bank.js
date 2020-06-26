@@ -15,9 +15,9 @@ const addGoal = (req, res, connection) => {
 
     // validate parameters
     const jwt = req.body.jwt
-    const title = req.body
-    const description = req.body || ''
-    const ep_reward = req.body || ''
+    const title = req.body.title
+    const description = req.body.description || ''
+    const ep_reward = req.body.ep_reward || ''
 
     if (typeof jwt === 'undefined' || typeof title === 'undefined' || title === '') {
         res.status(400).send('Bad request')
@@ -108,9 +108,9 @@ const updateGoal = (req, res, connection) => {
      // validate parameters
      const jwt = req.body.jwt
      const goal_id = req.body.goal_id
-     const title = req.body
-     const description = req.body || ''
-     const ep_reward = req.body || ''
+     const title = req.body.title
+     const description = req.body.description || ''
+     const ep_reward = req.body.ep_reward || ''
  
      if (typeof jwt === 'undefined' || typeof title === 'undefined' || title === '' || typeof goal_id === 'undefined') {
          res.status(400).send('Bad request')
@@ -209,8 +209,7 @@ const addInventory = (req, res, connection) => {
 const deleteInventory = (req, res, connection) => {
 
     // validate parameters
-    const jwt = req.body.jwt
-    const inventory_id = req.body.goal_id
+    const { jwt, inventory_id } = req.body
 
     if (typeof jwt === 'undefined' || typeof inventory_id === 'undefined') {
         res.status(400).send('Bad request')
