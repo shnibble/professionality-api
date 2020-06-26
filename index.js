@@ -9,6 +9,7 @@ const port = 3000
 // controllers
 const accountController = require('./controllers/account')
 const attendanceController = require('./controllers/attendance')
+const bankController = require('./controllers/bank')
 const calendarController = require('./controllers/calendar')
 const characterController = require('./controllers/character')
 const eventController = require('./controllers/event')
@@ -25,6 +26,7 @@ const bot = new Bot(connection)
 
 // initialize github webhook
 const GithubWebHook = require('express-github-webhook')
+const { connect } = require('./db/connect')
 const webhookHandler = GithubWebHook({ path: '/webhooks/github', secret: GITHUB_WEBHOOK_SECRET })
 
 // initialize express
@@ -64,6 +66,20 @@ app.get('/account/get', (req, res) => accountController.get(req, res, connection
 app.post('/attendance/signup', (req, res) => attendanceController.signup(req, res, connection))
 app.post('/attendance/callout', (req, res) => attendanceController.callout(req, res, connection))
 app.post('/attendance/cancel', (req, res) => attendanceController.cancel(req, res, connection))
+
+// bank
+app.get('/bank/goals/get', (req, res) => bankController.getGoals(req, res, connection))
+app.post('/bank/goals/add', (req, res) => bankController.addGoal(req, res, connection))
+app.post('/bank/goals/delete', (req, res) => bankController.deleteGoal(req, res, connection))
+app.post('/bank/goals/update', (req, res) => bankController.updateGoal(req, res, connection))
+app.get('/bank/inventory/get', (req, res) => bankController.getInventory(req, res, connection))
+app.post('/bank/inventory/add', (req, res) => bankController.addInventory(req, res, connection))
+app.post('/bank/inventory/delete', (req, res) => bankController.deleteInventory(req, res, connection))
+// app.get('/bank/requests/get', (req, res) => bankController.getRequests(req, res, connection))
+// app.post('/bank/requests/add', (req, res) => bankController.addRequest(req, res, connection))
+// app.post('/bank/requests/delete', (req, res) => bankController.deleteRequest(req, res, connection))
+// app.post('/bank/requests/complete', (req, res) => bankController.completeRequest(req, res, connection))
+// app.post('/bank/requests/reject', (req, res) => bankController.rejectRequest(req, res, connection))
 
 // calendar
 app.get('/calendar/get', (req, res) => calendarController.get(req, res, connection))
