@@ -6,6 +6,7 @@ const get = (req, res, connection) => {
             console.error(err)
             res.status(500).send('Server error')
         } else {
+            console.log('Results:', results)
             res.status(200).json(results)
         }
     })
