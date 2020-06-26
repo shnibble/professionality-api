@@ -192,7 +192,7 @@ const addInventory = (req, res, connection) => {
                 } else {
 
                     // insert new inventory
-                    connection.execute(`INSERT INTO bank_inventory (item_id, name, quality, icon) VALUES (?, ?, ?, ")`, [item_id, name, quality, icon], (err, results, fields) => {
+                    connection.execute(`INSERT INTO bank_inventory (item_id, name, quality, icon) VALUES (?, ?, ?, ?)`, [item_id, name, quality, icon], (err, results, fields) => {
                         if (err) {
                             console.error(err)
                             res.status(500).send('Server error')
