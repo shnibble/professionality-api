@@ -1,4 +1,4 @@
-const e = require("express")
+const JWT = require('../util/jwt')
 
 const getGoals = (req, res, connection) => {
     connection.query('SELECT * FROM bank_goals ORDER BY id', (err, results, fields) => {
