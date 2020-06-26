@@ -159,7 +159,7 @@ const updateGoal = (req, res, connection) => {
 }
 
 const getInventory = (req, res, connection) => {
-    connection.query('SELECT * FROM inventory ORDER BY name', (err, results, fields) => {
+    connection.query('SELECT * FROM bank_inventory ORDER BY name', (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
