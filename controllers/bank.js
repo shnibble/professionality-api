@@ -260,7 +260,14 @@ const deleteInventory = (req, res, connection) => {
 }
 
 const getRequests = (req, res, connection) => {
-    connection.query('SELECT * FROM bank_requests ORDER BY created', (err, results, fields) => {
+    connection.query(
+        `
+        SELECT br.*, u.nickname 
+        FROM bank_requests br 
+            INNER JOIN users u
+            ON br.discord_user_id = u.discord_user_id        
+        ORDER BY br.created
+        `, (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
