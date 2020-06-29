@@ -64,7 +64,7 @@ const get = (req, res, connection) => {
                     // fetch attendance for event
                     connection.execute(
                         `
-                        SELECT a.*, u.nickname, c.name as character_name, c.class_id as character_class_id
+                        SELECT a.*, u.nickname, u.member, c.name as character_name, c.class_id as character_class_id
                         FROM attendance a
                         INNER JOIN users u
                             ON a.discord_user_id = u.discord_user_id
