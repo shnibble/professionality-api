@@ -293,7 +293,7 @@ const addRequest = (req, res, Connection) => {
                 } else {
 
                     // insert request
-                    connection.execute('INSERT INTO bank_requests (message, timeframe, discord_user_id), VALUES (?, ?, ?)', [message, timeframe, jwt_data.body.discord_user_id], (err, results, fields) => {
+                    connection.execute('INSERT INTO bank_requests (message, timeframe, discord_user_id) VALUES (?, ?, ?)', [message, timeframe, jwt_data.body.discord_user_id], (err, results, fields) => {
                         if (err) {
                             console.error(err)
                             res.status(500).send('Server error')
