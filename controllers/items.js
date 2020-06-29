@@ -5,6 +5,8 @@ const getInventoryItemDetails = (item_id) => {
     return new Promise((resolve, reject) => {
         axios.get(`https://classic.wowhead.com/item=${item_id}&xml`)
         .then(response => {
+            const data = parser.parse(response.data)
+            console.log(`item_id ${item_id} data:`, data)
             resolve(parser.parse(response.data))
         })
         .catch(err => {
