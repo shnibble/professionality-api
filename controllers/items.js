@@ -20,7 +20,7 @@ const get = (req, res, connection) => {
     const search = req.query.search || ''
     const fullSearch = '%' + search + '%'
 
-    connection.execute(`SELECT * FROM items WHERE name LIKE ? ORDER BY name LIMIT 20`, [fullSearch], (err, results, fields) => {
+    connection.execute(`SELECT * FROM items WHERE name LIKE ? ORDER BY name LIMIT 20`, [fullSearch], async (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
@@ -28,24 +28,20 @@ const get = (req, res, connection) => {
 
             let n = 0
 
-            results.forEach(row => {
+            for(let n = 0; n < results.length; n++) {
                 console.log('Request details for item id:', row.item_id)
-                getInventoryItemDetails(row.item_id)
+                await getInventoryItemDetails(results[n].item_id)
                 .then(data => {
                     results[n].quality = data.wowhead.item.quality || 'Poor'
                     results[n].icon = data.wowhead.item.icon || 'classic_temp'
-
-                    n++
-
-                    if (n === results.length) {
-                        res.status(200).json(results)
-                    }
                 })
                 .catch(err => {
                     console.error(err)
                     res.status(500).send('Server error')
                 })
-            })
+            }
+
+            res.status(200).json(results)
         }
     })
 }
