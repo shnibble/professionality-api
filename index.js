@@ -74,6 +74,7 @@ app.post('/bank/goals/update', (req, res) => bankController.updateGoal(req, res,
 app.get('/bank/inventory/get', (req, res) => bankController.getInventory(req, res, connection))
 app.post('/bank/inventory/add', (req, res) => bankController.addInventory(req, res, connection))
 app.post('/bank/inventory/delete', (req, res) => bankController.deleteInventory(req, res, connection))
+app.get('/bank/requests/getActive', (req, res) => bankController.getActiveRequests(req, res, connection))
 app.get('/bank/requests/get', (req, res) => bankController.getRequests(req, res, connection))
 app.post('/bank/requests/add', (req, res) => bankController.addRequest(req, res, connection))
 app.post('/bank/requests/delete', (req, res) => bankController.deleteRequest(req, res, connection))

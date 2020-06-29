@@ -259,6 +259,17 @@ const deleteInventory = (req, res, connection) => {
     }
 }
 
+const getActiveRequests = (req, res, connection) {
+    connection.query('SELECT * FROM bank_requests WHERE completed IS NULL AND rejected IS NULL', (err, results, fields) => {
+        if (err) {
+            console.error(err)
+            res.status(500).send('Server error')
+        } else {
+            res.status(200).json(results)
+        }
+    })
+}
+
 const getRequests = (req, res, connection) => {
     connection.query(
         `
@@ -472,6 +483,7 @@ module.exports = {
     getInventory,
     addInventory,
     deleteInventory,
+    getActiveRequests,
     getRequests,
     addRequest,
     deleteRequest,
