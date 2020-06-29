@@ -31,19 +31,20 @@ const get = (req, res, connection) => {
             results.forEach(row => {
                 getInventoryItemDetails(row.item_id)
                 .then(data => {
+                    console.log('Inventory fetch returned:', data)
                     results[n].quality = data.wowhead.item.quality || 'Poor'
                     results[n].icon = data.wowhead.item.icon || 'classic_temp'
+
+                    n++
+
+                    if (n === results.length) {
+                        res.status(200).json(results)
+                    }
                 })
                 .catch(err => {
                     console.error(err)
                     res.status(500).send('Server error')
                 })
-
-                n++
-
-                if (n === results.length) {
-                    res.status(200).json(results)
-                }
             })
         }
     })
