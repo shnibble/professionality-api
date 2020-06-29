@@ -259,7 +259,7 @@ const deleteInventory = (req, res, connection) => {
     }
 }
 
-const getActiveRequests = (req, res, connection) {
+const getActiveRequests = (req, res, connection) => {
     connection.query('SELECT * FROM bank_requests WHERE completed IS NULL AND rejected IS NULL', (err, results, fields) => {
         if (err) {
             console.error(err)
