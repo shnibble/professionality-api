@@ -277,7 +277,7 @@ const getRequests = (req, res, connection) => {
         FROM bank_requests br 
             INNER JOIN users u
             ON br.discord_user_id = u.discord_user_id        
-        ORDER BY br.created
+        ORDER BY br.created DESC
         `, (err, results, fields) => {
         if (err) {
             console.error(err)
