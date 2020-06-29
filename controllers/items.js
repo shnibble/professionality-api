@@ -28,8 +28,9 @@ const get = (req, res, connection) => {
 
             let n = 0
 
-            results.forEach(async row => {
-                await getInventoryItemDetails(row.item_id)
+            results.forEach(row => {
+                console.log('Request details for item id:', row.item_id)
+                getInventoryItemDetails(row.item_id)
                 .then(data => {
                     results[n].quality = data.wowhead.item.quality || 'Poor'
                     results[n].icon = data.wowhead.item.icon || 'classic_temp'
