@@ -5,11 +5,9 @@ const getInventoryItemDetails = (item_id) => {
     return new Promise((resolve, reject) => {
         axios.get(`https://classic.wowhead.com/item=${item_id}&xml`)
         .then(response => {
-            console.log('Promise was resolved!')
             resolve(parser.parse(response.data))
         })
         .catch(err => {
-            console.log('Promise was rejected!')
             console.error(err)
             reject(err)
         })
@@ -31,7 +29,6 @@ const get = (req, res, connection) => {
             results.forEach(row => {
                 getInventoryItemDetails(row.item_id)
                 .then(data => {
-                    console.log('Inventory fetch returned:', data)
                     results[n].quality = data.wowhead.item.quality || 'Poor'
                     results[n].icon = data.wowhead.item.icon || 'classic_temp'
 
