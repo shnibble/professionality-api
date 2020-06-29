@@ -26,7 +26,6 @@ const bot = new Bot(connection)
 
 // initialize github webhook
 const GithubWebHook = require('express-github-webhook')
-const { connect } = require('./db/connect')
 const webhookHandler = GithubWebHook({ path: '/webhooks/github', secret: GITHUB_WEBHOOK_SECRET })
 
 // initialize express
@@ -75,11 +74,11 @@ app.post('/bank/goals/update', (req, res) => bankController.updateGoal(req, res,
 app.get('/bank/inventory/get', (req, res) => bankController.getInventory(req, res, connection))
 app.post('/bank/inventory/add', (req, res) => bankController.addInventory(req, res, connection))
 app.post('/bank/inventory/delete', (req, res) => bankController.deleteInventory(req, res, connection))
-// app.get('/bank/requests/get', (req, res) => bankController.getRequests(req, res, connection))
-// app.post('/bank/requests/add', (req, res) => bankController.addRequest(req, res, connection))
-// app.post('/bank/requests/delete', (req, res) => bankController.deleteRequest(req, res, connection))
-// app.post('/bank/requests/complete', (req, res) => bankController.completeRequest(req, res, connection))
-// app.post('/bank/requests/reject', (req, res) => bankController.rejectRequest(req, res, connection))
+app.get('/bank/requests/get', (req, res) => bankController.getRequests(req, res, connection))
+app.post('/bank/requests/add', (req, res) => bankController.addRequest(req, res, connection))
+app.post('/bank/requests/delete', (req, res) => bankController.deleteRequest(req, res, connection))
+app.post('/bank/requests/complete', (req, res) => bankController.completeRequest(req, res, connection))
+app.post('/bank/requests/reject', (req, res) => bankController.rejectRequest(req, res, connection))
 
 // calendar
 app.get('/calendar/get', (req, res) => calendarController.get(req, res, connection))
