@@ -26,10 +26,8 @@ const get = (req, res, connection) => {
             res.status(500).send('Server error')
         } else {
 
-            let n = 0
-
             for(let n = 0; n < results.length; n++) {
-                console.log('Request details for item id:', row.item_id)
+                console.log('Request details for item id:', results[n].item_id)
                 await getInventoryItemDetails(results[n].item_id)
                 .then(data => {
                     results[n].quality = data.wowhead.item.quality || 'Poor'
