@@ -2,14 +2,16 @@ const parser = require('fast-xml-parser')
 const axios = require('axios')
 
 const getInventoryItemDetails = (item_id) => {
-    axios.get(`https://classic.wowhead.com/item=${item_id}&xml`)
-    .then(response => {
-        return(parser.parse(response.data))
-    })
-    .catch(err => {
-        console.error(err)
-        return false
-    })
+    return new Promise((resolve, reject) => {
+        axios.get(`https://classic.wowhead.com/item=${item_id}&xml`)
+        .then(response => {
+            resolve(parser.parse(response.data))
+        })
+        .catch(err => {
+            console.error(err)
+            reject(err)
+        })
+    }) 
 }
 
 const get = (req, res, connection) => {
@@ -25,10 +27,16 @@ const get = (req, res, connection) => {
             let n = 0
 
             results.forEach(async row => {
-                const data = await getInventoryItemDetails(row.item_id)
-                results[n].name = data.wowhead.item.name || 'Item Not Found'
-                results[n].quality = data.wowhead.item.quality || 'Poor'
-                results[n].icon = data.wowhead.item.icon || 'classic_temp'
+                getInventoryItemDetails(row.item_id)
+                .then(data => {
+                    results[n].name = data.wowhead.item.name || 'Item Not Found'
+                    results[n].quality = data.wowhead.item.quality || 'Poor'
+                    results[n].icon = data.wowhead.item.icon || 'classic_temp'
+                })
+                .catch(err => {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                })
 
                 n++
 
