@@ -6,7 +6,6 @@ const getInventoryItemDetails = (item_id) => {
         axios.get(`https://classic.wowhead.com/item=${item_id}&xml`)
         .then(response => {
             const data = parser.parse(response.data)
-            console.log(`item_id ${item_id} data:`, data)
             resolve(parser.parse(response.data))
         })
         .catch(err => {
@@ -27,7 +26,6 @@ const get = (req, res, connection) => {
         } else {
 
             for(let n = 0; n < results.length; n++) {
-                console.log('Request details for item id:', results[n].item_id)
                 await getInventoryItemDetails(results[n].item_id)
                 .then(data => {
                     results[n].quality = data.wowhead.item.quality || 'Poor'
