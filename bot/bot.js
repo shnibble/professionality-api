@@ -219,6 +219,22 @@ class Bot {
         .addField(`${event.title} - ${date.tz('America/New_York').format('dddd MM/DD @ h:mm a')} (server time)`, `Sign up or call out here: https://professionality.app/event/${event.id}`)
 
         this.bot.channels.cache.get(events_channel_id).send(embed)
+        .then(message => {
+            const message_id = message.id
+            this.connection.execute('UPDATE `events` SET message_id = ? WHERE id = ?', [message_id, event.id], (err, result, fields) => {
+                if (err) {
+                    console.error(err)
+                }
+            })
+        })
+    }
+
+    // delete event
+    deleteCalendarEventMessage = (message_id) => {
+        this.bot.channels.cache.get(events_channel_id).fetch(message_id)
+        .then(message => {
+            message.delete()
+        })
     }
 }
 

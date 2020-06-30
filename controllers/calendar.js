@@ -143,7 +143,7 @@ const add = (req, res, connection, bot) => {
     }
 }
 
-const deleteEvent = (req, res, connection) => {
+const deleteEvent = (req, res, connection, bot) => {
 
     // validate parameters
     const { jwt, event_id } = req.body
@@ -162,15 +162,31 @@ const deleteEvent = (req, res, connection) => {
                 // confirm officer rank
                 if (jwt_data.body.is_officer) {
 
-                    // insert event
-                    connection.execute('DELETE FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
+                    // confirm event exists
+                    connection.execute('SELECT * FROM `events` WHERE id = ?', [event_id], (err, result, fields) => {
                         if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
+                            res.status(400).send('Bad request')
                         } else {
-                            res.status(200).send('Success')
+                            const message_id = results[0].message_id
+                            
+                            // delete event
+                            connection.execute('DELETE FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+
+                                    // if message_id was found then send directive to bot to delete the event message
+                                    if (message_id) {
+                                        bot.deleteCalendarEventMessage(message_id)
+                                    }                                    
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     })
+
+                    
                 }
             }
         })
