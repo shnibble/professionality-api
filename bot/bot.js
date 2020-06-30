@@ -231,7 +231,7 @@ class Bot {
 
     // delete event
     deleteCalendarEventMessage = (message_id) => {
-        this.bot.channels.cache.get(events_channel_id).fetch(message_id)
+        this.bot.channels.cache.get(events_channel_id).messages.fetch(message_id)
         .then(message => {
             message.delete()
         })
