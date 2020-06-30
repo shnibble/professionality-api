@@ -62,9 +62,9 @@ app.post('/account/verify', (req, res) => accountController.verify(req, res))
 app.get('/account/get', (req, res) => accountController.get(req, res, connection))
 
 // attendance
-app.post('/attendance/signup', (req, res) => attendanceController.signup(req, res, connection))
-app.post('/attendance/callout', (req, res) => attendanceController.callout(req, res, connection))
-app.post('/attendance/cancel', (req, res) => attendanceController.cancel(req, res, connection))
+app.post('/attendance/signup', (req, res) => attendanceController.signup(req, res, connection, bot))
+app.post('/attendance/callout', (req, res) => attendanceController.callout(req, res, connection, bot))
+app.post('/attendance/cancel', (req, res) => attendanceController.cancel(req, res, connection, bot))
 
 // bank
 app.get('/bank/goals/get', (req, res) => bankController.getGoals(req, res, connection))

@@ -1,6 +1,6 @@
 const JWT = require('../util/jwt')
 
-const signup = (req, res, connection) => {
+const signup = (req, res, connection, bot) => {
     
     // validate parameters
     const { jwt, event_id, character_id, role_id, note } = req.body
@@ -75,6 +75,9 @@ const signup = (req, res, connection) => {
                                                                 res.status(500).send('Server error')
                                                             } else {
                                                                 res.status(200).send('Success')
+
+                                                                // update discord message via bot
+                                                                bot.updateCalendarEvent(event_id)
                                                             }
                                                         })
 
@@ -87,6 +90,9 @@ const signup = (req, res, connection) => {
                                                                 res.status(500).send('Server error')
                                                             } else {
                                                                 res.status(200).send('Success')
+
+                                                                // update discord message via bot
+                                                                bot.updateCalendarEvent(event_id)
                                                             }
                                                         })
                                                     }
@@ -104,7 +110,7 @@ const signup = (req, res, connection) => {
     }
 }
 
-const callout = (req, res, connection) => {
+const callout = (req, res, connection, bot) => {
     
     // validate parameters
     const { jwt, event_id } = req.body
@@ -155,6 +161,9 @@ const callout = (req, res, connection) => {
                                                     res.status(500).send('Server error')
                                                 } else {
                                                     res.status(200).send('Success')
+
+                                                    // update discord message via bot
+                                                    bot.updateCalendarEvent(event_id)
                                                 }
                                             })
 
@@ -167,6 +176,9 @@ const callout = (req, res, connection) => {
                                                     res.status(500).send('Server error')
                                                 } else {
                                                     res.status(200).send('Success')
+
+                                                    // update discord message via bot
+                                                    bot.updateCalendarEvent(event_id)
                                                 }
                                             })
                                         }
@@ -182,7 +194,7 @@ const callout = (req, res, connection) => {
 }
 
 
-const cancel = (req, res, connection) => {
+const cancel = (req, res, connection, bot) => {
     
     // validate parameters
     const { jwt, event_id } = req.body
@@ -232,6 +244,9 @@ const cancel = (req, res, connection) => {
                                                 res.status(500).send('Server error')
                                             } else {
                                                 res.status(200).send('Success')
+
+                                                // update discord message via bot
+                                                bot.updateCalendarEvent(event_id)
                                             }
                                         })
                                     }

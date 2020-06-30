@@ -216,7 +216,10 @@ class Bot {
         const date = moment(event.start)
         const embed = new Discord.MessageEmbed()
         .setColor('#0099ff')
-        .addField(`${event.title} - ${date.tz('America/New_York').format('dddd MM/DD @ h:mm a')} (server time)`, `Sign up or call out here: https://professionality.app/event/${event.id}`)
+        .setTitle(`${event.title} - ${date.tz('America/New_York').format('dddd MM/DD @ h:mm a')} (server time)`)
+        .setDescription(`Sign up or call out here: https://professionality.app/event/${event.id}`)
+        .addField('Sign Ups:', '0', true)
+        .addField('Call Outs:', '0', true)
 
         this.bot.channels.cache.get(events_channel_id).send(embed)
         .then(message => {
@@ -238,6 +241,33 @@ class Bot {
         .catch(err => {
             console.error(err)
         })
+    }
+
+    updateCalendarEvent = (event_id) => {
+        this.connection.execute(`SELECT e.id, e.title, e.start, e.message_id, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND signed_up IS NOT NULL) as total_sign_ups, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND called_out IS NOT NULL) as total_call_outs FROM events e WHERE e.id = ?`, [event_id], (err, result, fields) => {
+            if (err || result.length === 0) {
+                console.error('Event not found to update')
+            } else {
+                const event = result[0]
+                const date = moment(event.start)
+                const embed = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle(`${event.title} - ${date.tz('America/New_York').format('dddd MM/DD @ h:mm a')} (server time)`)
+                .setDescription(`Sign up or call out here: https://professionality.app/event/${event.id}`)
+                .addField('Sign Ups:', event.total_sign_ups, true)
+                .addField('Call Outs:', event.total_call_outs, true)
+
+                this.bot.channels.cache.get(events_channel_id).messages.fetch(event.message_id)
+                .then(message => {
+                    message.edit(embed)
+                })
+                .catch(err => {
+                    console.error(err)
+                })
+            }
+        })
+
+        
     }
 }
 
