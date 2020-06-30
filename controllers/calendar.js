@@ -167,7 +167,7 @@ const deleteEvent = (req, res, connection, bot) => {
                         if (err) {
                             res.status(400).send('Bad request')
                         } else {
-                            const message_id = results[0].message_id
+                            const message_id = result[0].message_id
                             
                             // delete event
                             connection.execute('DELETE FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
