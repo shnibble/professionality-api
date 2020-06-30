@@ -84,7 +84,7 @@ app.post('/bank/requests/reject', (req, res) => bankController.rejectRequest(req
 // calendar
 app.get('/calendar/get', (req, res) => calendarController.get(req, res, connection))
 app.get('/calendar/past', (req, res) => calendarController.getPast(req, res, connection))
-app.post('/calendar/add', (req, res) => calendarController.add(req, res, connection))
+app.post('/calendar/add', (req, res) => calendarController.add(req, res, connection, bot))
 app.post('/calendar/delete', (req, res) => calendarController.deleteEvent(req, res, connection))
 
 // character

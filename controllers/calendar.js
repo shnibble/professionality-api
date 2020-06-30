@@ -103,7 +103,7 @@ const getPast = (req, res, connection) => {
     })
 }
 
-const add = (req, res, connection) => {
+const add = (req, res, connection, bot) => {
 
     // validate parameters
     const { jwt, title, start } = req.body
@@ -123,11 +123,17 @@ const add = (req, res, connection) => {
                 if (jwt_data.body.is_officer) {
 
                     // insert event
-                    connection.execute('INSERT INTO `events` (title, start) VALUES (?, ?)', [title, start], (err, results, fields) => {
+                    connection.execute('INSERT INTO `events` (title, start) VALUES (?, ?)', [title, start], (err, result, fields) => {
                         if (err) {
                             console.error(err)
                             res.status(500).send('Server error')
                         } else {
+                            const event = {
+                                id: result.insertId,
+                                title,
+                                start
+                            }
+                            bot.postNewCalendarEvent(event)
                             res.status(200).send('Success')
                         }
                     })

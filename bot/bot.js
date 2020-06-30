@@ -6,6 +6,7 @@ const server_id = process.env.DISCORD_SERVER_ID
 const member_role_id = process.env.DISCORD_MEMBER_ROLE_ID
 const officer_role_id = process.env.DISCORD_OFFICER_ROLE_ID
 const officer_channel_id = process.env.DISCORD_OFFICER_CHANNEL_ID
+const events_channel_id = process.env.DISCORD_EVENTS_CHANNEL_ID
 require('moment-timezone')
 
 class Bot {
@@ -208,6 +209,16 @@ class Bot {
             return nickname
         }
         return false
+    }
+
+    // post new event
+    postNewCalendarEvent = (event) => {
+        const date = moment(event.start)
+        const embed = new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .addField(`${event.title} - ${date.tz('America/New_York').format('dddd MM/DD @ h:mm a')} (server time)`, `Sign up or call out here: https://professionality.app/event/${event.id}`)
+
+        this.bot.channels.cache.get(events_channel_id).send(embed)
     }
 }
 
