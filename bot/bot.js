@@ -235,6 +235,9 @@ class Bot {
         .then(message => {
             message.delete()
         })
+        .catch(err => {
+            console.error(err)
+        })
     }
 }
 
