@@ -42,6 +42,32 @@ const get = (req, res, connection) => {
     })
 }
 
+const getDetails = (req, res, connection) => {
+    const item_id = req.query.item_id
+
+    if (typeof item_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+        connection.execute(`SELECT * FROM loot WHERE item_id = ?`, [item_id], async (err, results, fields) => {
+            if (err) {
+                res.status(500).send('Server error')
+            } else if (results.length === 0 ) {
+                res.status(400).send('Bad request')
+            } else {
+                await getInventoryItemDetails(results[0].item_id)
+                .then(data => {
+                    res.status(200).json(data)
+                })
+                .catch(err => {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                })
+            }
+        })
+    }
+}
+
 module.exports = {
-    get
+    get,
+    getDetails
 }
