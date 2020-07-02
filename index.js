@@ -14,6 +14,7 @@ const calendarController = require('./controllers/calendar')
 const characterController = require('./controllers/character')
 const eventController = require('./controllers/event')
 const itemsController = require('./controllers/items')
+const lootController = require('./controllers/loot')
 const rosterController = require('./controllers/roster')
 
 
@@ -102,6 +103,9 @@ app.get('/event/get', (req, res) => eventController.get(req, res, connection))
 // items
 app.get('/items/get', (req, res) => itemsController.get(req, res, connection))
 app.get('/items/getDetails', (req, res) => itemsController.getDetails(req, res, connection))
+
+// loot
+app.get('/loot/get', (req, res) => lootController.get(req, res, connection))
 
 // roster
 app.get('/roster/pugs', (req, res) => rosterController.getPugs(req, res, connection))
