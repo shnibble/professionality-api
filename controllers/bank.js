@@ -173,8 +173,8 @@ const getInventory = (req, res, connection) => {
 
 const addInventory = (req, res, connection) => {
     // validate parameters
-    const { jwt, item_id, name, quality, icon, random_enchantment } = req.body
-    let { category_id } = req.body
+    const { jwt, item_id, name, quality, icon } = req.body
+    let { category_id, random_enchantment } = req.body
 
     if (typeof jwt === 'undefined' || typeof item_id === 'undefined' || typeof name === 'undefined' || typeof quality === 'undefined' || typeof icon === 'undefined' ) {
         res.status(400).send('Bad request')
@@ -183,6 +183,9 @@ const addInventory = (req, res, connection) => {
         // clean up parameters
         if (typeof category_id === 'undefined' || category_id === null) {
             category_id = 1
+        }
+        if (typeof random_enchantment === 'undefined') {
+            random_enchantment = null
         }
 
         // verify jwt
