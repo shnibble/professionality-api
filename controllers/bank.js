@@ -161,7 +161,7 @@ const updateGoal = (req, res, connection) => {
 }
 
 const getInventory = (req, res, connection) => {
-    connection.query('SELECT * FROM bank_inventory ORDER BY name', (err, results, fields) => {
+    connection.query('SELECT bi.*, bc.name as category_name FROM bank_inventory INNER JOIN bank_categories bc ON bi.category_id = bc.id bi ORDER BY bi.name', (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
@@ -173,11 +173,17 @@ const getInventory = (req, res, connection) => {
 
 const addInventory = (req, res, connection) => {
     // validate parameters
-    const { jwt, item_id, name, quality, icon } = req.body
+    const { jwt, item_id, name, quality, icon, random_enchantment } = req.body
+    let { category_id } = req.body
 
     if (typeof jwt === 'undefined' || typeof item_id === 'undefined' || typeof name === 'undefined' || typeof quality === 'undefined' || typeof icon === 'undefined' ) {
         res.status(400).send('Bad request')
     } else {
+
+        // clean up parameters
+        if (typeof category_id === 'undefined' || category_id === null) {
+            category_id = 1
+        }
 
         // verify jwt
         JWT.verify(jwt)
@@ -194,7 +200,7 @@ const addInventory = (req, res, connection) => {
                 } else {
 
                     // insert new inventory
-                    connection.execute(`INSERT INTO bank_inventory (item_id, name, quality, icon) VALUES (?, ?, ?, ?)`, [item_id, name, quality, icon], (err, results, fields) => {
+                    connection.execute(`INSERT INTO bank_inventory (item_id, name, quality, icon, category_id, random_enchantment) VALUES (?, ?, ?, ?, ?, ?)`, [item_id, name, quality, icon, category_id, random_enchantment], (err, results, fields) => {
                         if (err) {
                             console.error(err)
                             res.status(500).send('Server error')
@@ -243,6 +249,57 @@ const deleteInventory = (req, res, connection) => {
 
                                 // delete inventory
                                 connection.execute(`DELETE FROM bank_inventory WHERE id = ?`, [inventory_id], (err, results, fields) => {
+                                    if (err) {
+                                        console.error(err)
+                                        res.status(500).send('Server error')
+                                    } else {
+                                        res.status(200).send('Success')
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    }
+}
+
+const updateInventory = (req, res, connection) => {
+
+    // validate parameters
+    const { jwt, inventory_id, category_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof inventory_id === 'undefined' || typeof category_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // if invalid return 400
+            if (!jwt_data) {
+                res.status(400).send('Invalid token')
+            } else {
+
+                // confirm officer rank
+                if (!jwt_data.body.is_officer) {
+                    res.status(403).send('Forbidden')
+                } else {
+
+                    // confirm inventory exists
+                    connection.execute('SELECT * FROM bank_inventory WHERE id = ?', [inventory_id], (err, results, fields) => {
+                        if (err) {
+                            console.error(err)
+                            res.status(500).send('Server error')
+                        } else {
+                            if (results.length === 0) {
+                                res.status(400).send('Bad request')
+                            } else {
+
+                                // update inventory
+                                connection.execute(`UPDATE bank_inventory SET category_id = ? WHERE id = ?`, [category_id, inventory_id], (err, results, fields) => {
                                     if (err) {
                                         console.error(err)
                                         res.status(500).send('Server error')
@@ -483,6 +540,7 @@ module.exports = {
     getInventory,
     addInventory,
     deleteInventory,
+    updateInventory,
     getActiveRequests,
     getRequests,
     addRequest,
