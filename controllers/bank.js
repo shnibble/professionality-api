@@ -161,7 +161,7 @@ const updateGoal = (req, res, connection) => {
 }
 
 const getInventory = (req, res, connection) => {
-    connection.query('SELECT bi.*, bc.name as category_name FROM bank_inventory INNER JOIN bank_categories bc ON bi.category_id = bc.id bi ORDER BY bi.name', (err, results, fields) => {
+    connection.query('SELECT bi.*, bc.name as category_name FROM bank_inventory bi INNER JOIN bank_categories bc ON bi.category_id = bc.id ORDER BY bi.name', (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
