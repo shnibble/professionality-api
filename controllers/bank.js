@@ -354,7 +354,7 @@ const getRequests = (req, res, connection) => {
                     SELECT brc.*, u.nickname  
                     FROM bank_request_comments brc 
                         INNER JOIN users u
-                        ON brc.user_discord_id = u.user_discord_id 
+                        ON brc.discord_user_id = u.discord_user_id 
                     WHERE brc.bank_request_id = ? ORDER BY brc.timestamp
                     `, [row.id], (err, result, fields) => {
                     row.comments = result
