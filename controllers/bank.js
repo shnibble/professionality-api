@@ -349,7 +349,14 @@ const getRequests = (req, res, connection) => {
             let pending = results.length
 
             results.map(row => {
-                connection.execute('SELECT * FROM `bank_request_comments` WHERE `bank_request_id` = ? ORDER BY timestamp', [row.id], (err, result, fields) => {
+                connection.execute(
+                    `
+                    SELECT brc.*, u.nickname  
+                    FROM bank_request_comments brc 
+                        INNER JOIN users u
+                        ON brc.user_discord_id = u.user_discord_id 
+                    WHERE brc.bank_request_id = ? ORDER BY brc.timestamp
+                    `, [row.id], (err, result, fields) => {
                     row.comments = result
                     final_results.push(row)
 
