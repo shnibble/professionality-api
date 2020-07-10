@@ -83,6 +83,7 @@ app.post('/bank/requests/cancel', (req, res) => bankController.cancelRequest(req
 app.post('/bank/requests/delete', (req, res) => bankController.deleteRequest(req, res, connection))
 app.post('/bank/requests/complete', (req, res) => bankController.completeRequest(req, res, connection))
 app.post('/bank/requests/reject', (req, res) => bankController.rejectRequest(req, res, connection))
+app.post('/bank/requests/comment/add', (req, res) => bankController.addRequestComment(req, res, connection))
 
 // calendar
 app.get('/calendar/get', (req, res) => calendarController.get(req, res, connection))

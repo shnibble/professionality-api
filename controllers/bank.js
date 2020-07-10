@@ -607,6 +607,56 @@ const rejectRequest = (req, res, connection) => {
     }
 }
 
+const addRequestComment = (req, res, connection) => {
+    // validate parameters
+    const { jwt, request_id, message } = req.body
+
+    if (typeof jwt === 'undefined' || typeof request_id === 'undefined' || typeof message === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // if invalid return 400
+            if (!jwt_data) {
+                res.status(400).send('Invalid token')
+            } else {
+
+                // confirm request exists
+                connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        if (results.length === 0) {
+                            res.status(400).send('Bad request')
+                        } else {
+
+                            // confirm officer rank or creator of the request
+                            if (!jwt_data.body.is_officer && !jwt_data.body.discord_user_id === results[0].discord_user_id) {
+                                res.status(403).send('Forbidden')
+                            } else {
+
+                                // add comment
+                                connection.execute('INSERT INTO bank_request_comments (bank_request_id, discord_user_id, message) VALUES (?, ?, ?)', [request_id, jwt_data.body.discord_user_id, message], (err, results, fields) => {
+                                    if (err) {
+                                        console.error(err)
+                                        res.status(500).send('Server error')
+                                    } else {
+                                        res.status(200).send('Success')
+                                    }
+                                })
+                            }
+                        }
+                    }
+                })
+            }
+        })
+    }
+}
+
 module.exports = {
     getGoals,
     addGoal,
@@ -622,5 +672,6 @@ module.exports = {
     cancelRequest,
     deleteRequest,
     completeRequest,
-    rejectRequest
+    rejectRequest,
+    addRequestComment
 }
