@@ -385,6 +385,56 @@ const addRequest = (req, res, Connection) => {
     }
 }
 
+const cancelRequest = (req, res, connection) => {
+    // validate parameters
+    const { jwt, request_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof request_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // if invalid return 400
+            if (!jwt_data) {
+                res.status(400).send('Invalid token')
+            } else {
+
+                // confirm request exists
+                connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        if (results.length === 0) {
+                            res.status(400).send('Bad request')
+                        } else {
+
+                            // confirm user who created request
+                            if (!jwt_data.body.discord_user_id === results[0].discord_user_id) {
+                                res.status(403).send('Forbidden')
+                            } else {
+
+                                // cancel request
+                                connection.execute('UPDATE bank_requests SET cancelled = NOW() WHERE id = ?', [request_id], (err, results, fields) => {
+                                    if (err) {
+                                        console.error(err)
+                                        res.status(500).send('Server error')
+                                    } else {
+                                        res.status(200).send('Success')
+                                    }
+                                })
+                            }
+                        }
+                    }
+                })
+            }
+        })
+    }
+}
+
 const deleteRequest = (req, res, connection) => {
     // validate parameters
     const { jwt, request_id } = req.body
@@ -434,6 +484,7 @@ const deleteRequest = (req, res, connection) => {
         })
     }
 }
+
 
 const completeRequest = (req, res, connection) => {
     // validate parameters
@@ -547,6 +598,7 @@ module.exports = {
     getActiveRequests,
     getRequests,
     addRequest,
+    cancelRequest,
     deleteRequest,
     completeRequest,
     rejectRequest
