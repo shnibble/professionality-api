@@ -350,7 +350,7 @@ const getRequests = (req, res, connection) => {
 
             results.map(row => {
                 connection.execute('SELECT * FROM `bank_request_comments` WHERE `bank_request_id` = ? ORDER BY timestamp', [row.id], (err, result, fields) => {
-                    row.characters = result
+                    row.comments = result
                     final_results.push(row)
 
                     if (0 === --pending) {
