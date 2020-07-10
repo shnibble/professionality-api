@@ -320,7 +320,7 @@ const updateInventory = (req, res, connection) => {
 }
 
 const getActiveRequests = (req, res, connection) => {
-    connection.query('SELECT * FROM bank_requests WHERE completed IS NULL AND rejected IS NULL', (err, results, fields) => {
+    connection.query('SELECT * FROM bank_requests WHERE completed IS NULL AND rejected IS NULL AND cancelled IS NULL', (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
@@ -343,7 +343,21 @@ const getRequests = (req, res, connection) => {
             console.error(err)
             res.status(500).send('Server error')
         } else {
-            res.status(200).json(results)
+
+            // fetch comments for request
+            let final_results = []
+            let pending = results.length
+
+            results.map(row => {
+                connection.execute('SELECT * FROM `bank_request_comments` WHERE `bank_request_id` = ? ORDER BY timestamp', [row.id], (err, result, fields) => {
+                    row.characters = result
+                    final_results.push(row)
+
+                    if (0 === --pending) {
+                        res.status(200).json(final_results)
+                    }
+                })
+            })
         }
     })
 }
@@ -462,8 +476,8 @@ const deleteRequest = (req, res, connection) => {
                             res.status(400).send('Bad request')
                         } else {
 
-                            // confirm officer rank or user who created request
-                            if (!jwt_data.body.is_officer && jwt_data.body.discord_user_id !== results[0].discord_user_id) {
+                            // confirm officer rank
+                            if (!jwt_data.body.is_officer) {
                                 res.status(403).send('Forbidden')
                             } else {
 
