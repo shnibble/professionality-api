@@ -109,6 +109,7 @@ app.get('/items/getDetails', (req, res) => itemsController.getDetails(req, res))
 
 // loot
 app.get('/loot/get', (req, res) => lootController.get(req, res, connection))
+app.post('/loot/update', (req, res) => lootController.update(req, res, connection))
 
 // roster
 app.get('/roster/pugs', (req, res) => rosterController.getPugs(req, res, connection))
