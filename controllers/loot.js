@@ -1,3 +1,5 @@
+const JWT = require('../util/jwt')
+
 const get = (req, res, connection) => {
     const instance = req.query.instance
     if (typeof instance === 'undefined') {
