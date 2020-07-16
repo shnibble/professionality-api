@@ -62,7 +62,7 @@ const update = (req, res, connection) => {
                 // get loot
                 connection.execute('SELECT * FROM loot WHERE id = ?', [loot_id], (err, results, fields) => {
                     if (err) {
-                        res.status(500).send('Server error 1')
+                        res.status(500).send('Server error')
                     } else if (results.length === 0) {
                         res.status(400).send('Bad request')
                     } else {
@@ -72,13 +72,13 @@ const update = (req, res, connection) => {
                             res.status(403).send('Forbidden')
                         } else {
 
-                            connection.execute('INSERT INTO loot_history (discord_user_id, previous_priority, new_priority, previous_comments, new_comments) VALUES (?, ?, ?, ?, ?', [jwt_data.body.discord_user_id, results[0].priority, priority, results[0].comments, comments], (err, results, fields) => {
+                            connection.execute('INSERT INTO loot_history (discord_user_id, previous_priority, new_priority, previous_comments, new_comments) VALUES (?, ?, ?, ?, ?)', [jwt_data.body.discord_user_id, results[0].priority, priority, results[0].comments, comments], (err, results, fields) => {
                                 if (err) {
-                                    res.status(500).send('Server error 2')
+                                    res.status(500).send('Server error')
                                 } else {
                                     connection.execute('UPDATE loot SET priority = ?, comments = ? WHERE id = ?', [priority, comments, loot_id], (err, results, fields) => {
                                         if (err) {
-                                            res.status(500).send('Server error 3')
+                                            res.status(500).send('Server error')
                                         } else {
                                             res.status(200).send('Success')
                                         }
