@@ -50,6 +50,8 @@ class Bot {
         this.bot.on('guildMemberUpdate', member => {
             const discord_user_id = member.user.id
 
+            console.log('Incoming guildMemberUpdate for user id:', discord_user_id)
+
             const is_member = this.checkIfUserIsMember(discord_user_id)
             const is_officer = this.checkIfUserIsOfficer(discord_user_id)
             const nickname = this.getUserNickname(discord_user_id)
