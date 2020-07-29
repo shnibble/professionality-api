@@ -3,9 +3,10 @@ const JWT = require('../util/jwt')
 const add = (req, res, connection) => {
 
     // validate parameters
-    const { jwt, character_name } = req.body
-    if (typeof jwt === 'undefined' || typeof character_name === 'undefined') {
+    const { jwt, character_name, character_race_id, character_class_id, character_role_id } = req.body
+    if (typeof jwt === 'undefined' || typeof character_name === 'undefined' || typeof character_race_id === 'undefined' || typeof character_class_id === 'undefined' || typeof character_role_id === 'undefined') {
         res.status(400).send('Bad request')
+
     } else {
 
         // verify jwt
@@ -18,7 +19,7 @@ const add = (req, res, connection) => {
             } else {
 
                 // insert new character
-                connection.execute('INSERT INTO characters (`discord_user_id`, `name`) VALUES (?, ?)', [jwt_data.body.discord_user_id, character_name], (err, results, fields) => {
+                connection.execute('INSERT INTO characters (`discord_user_id`, `name`, `race_id`, `class_id`, `role_id`) VALUES (?, ?, ?, ?, ?)', [jwt_data.body.discord_user_id, character_name, character_race_id, character_class_id, character_role_id], (err, results, fields) => {
                     if (err) {
                         console.error(err)
                         res.status(500).send('Server error')
