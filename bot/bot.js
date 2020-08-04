@@ -246,7 +246,7 @@ class Bot {
     }
 
     updateCalendarEvent = (event_id) => {
-        this.connection.execute(`SELECT e.id, e.title, e.start, e.message_id, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND signed_up IS NOT NULL) as total_sign_ups, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND called_out IS NOT NULL) as total_call_outs FROM events e WHERE e.id = ?`, [event_id], (err, result, fields) => {
+        this.connection.execute(`SELECT e.id, e.title, e.start, e.message_id, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND signed_up IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_sign_ups, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND called_out IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_call_outs FROM events e WHERE e.id = ?`, [event_id], (err, result, fields) => {
             if (err || result.length === 0) {
                 console.error('Event not found to update')
             } else {
