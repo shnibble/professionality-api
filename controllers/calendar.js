@@ -1,7 +1,6 @@
 const JWT = require('../util/jwt')
 
 const get = (req, res, connection) => {
-
     const discord_user_id = req.query.discord_user_id || null
     const limit = req.query.limit || 1000
     const offset = req.query.offset || 0
@@ -58,6 +57,9 @@ const get = (req, res, connection) => {
 }
 
 const getPast = (req, res, connection) => {
+    const limit = req.query.limit || 1000
+    const offset = req.query.offset || 0
+
     connection.query( 
         `
         SELECT e.*,
