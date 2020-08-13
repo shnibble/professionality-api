@@ -320,12 +320,41 @@ const updateInventory = (req, res, connection) => {
 }
 
 const getActiveRequests = (req, res, connection) => {
-    connection.query('SELECT * FROM bank_requests WHERE completed IS NULL AND rejected IS NULL AND cancelled IS NULL', (err, results, fields) => {
+    connection.query(
+        `
+        SELECT br.*, u.nickname 
+        FROM bank_requests br 
+            INNER JOIN users u
+            ON br.discord_user_id = u.discord_user_id        
+        ORDER BY br.created DESC 
+        WHERE br.completed IS NULL AND br.rejected IS NULL AND br.cancelled IS NULL
+        `, (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
         } else {
-            res.status(200).json(results)
+
+            // fetch comments for request
+            let final_results = []
+            let pending = results.length
+
+            results.map(row => {
+                connection.execute(
+                    `
+                    SELECT brc.*, u.nickname  
+                    FROM bank_request_comments brc 
+                        INNER JOIN users u
+                        ON brc.discord_user_id = u.discord_user_id 
+                    WHERE brc.bank_request_id = ? ORDER BY brc.timestamp
+                    `, [row.id], (err, result, fields) => {
+                    row.comments = result
+                    final_results.push(row)
+
+                    if (0 === --pending) {
+                        res.status(200).json(final_results)
+                    }
+                })
+            })
         }
     })
 }
