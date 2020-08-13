@@ -3,6 +3,8 @@ const JWT = require('../util/jwt')
 const get = (req, res, connection) => {
 
     const discord_user_id = req.query.discord_user_id || null
+    const limit = req.query.limit || 1000
+    const offset = req.query.offset || 0
 
     connection.query( 
         `
@@ -43,9 +45,9 @@ const get = (req, res, connection) => {
         FROM events e 
         LEFT JOIN attendance a
         	ON e.id =  a.event_id AND a.discord_user_id = ?
-        WHERE e.start >= NOW() ORDER BY e.start
+        WHERE e.start >= NOW() ORDER BY e.start LIMIT ? OFFSET ?
         `,
-        [discord_user_id], (err, results, fields) => {
+        [discord_user_id, limit, offset], (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
@@ -92,8 +94,9 @@ const getPast = (req, res, connection) => {
             AND signed_up IS NOT NULL 
             AND role_id = 4) 
             AS total_tanks 
-        FROM events e WHERE e.start < NOW() ORDER BY e.start DESC
-        `, (err, results, fields) => {
+        FROM events e WHERE e.start < NOW() ORDER BY e.start DESC LIMIT ? OFFSET ?
+        `,
+        [limit, offset], (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
