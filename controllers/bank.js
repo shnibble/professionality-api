@@ -320,15 +320,18 @@ const updateInventory = (req, res, connection) => {
 }
 
 const getActiveRequests = (req, res, connection) => {
-    connection.query(
+    const limit = req.query.limit || 1000
+    const offset = req.query.offset || 0
+
+    connection.execute(
         `
         SELECT br.*, u.nickname 
         FROM bank_requests br 
             INNER JOIN users u
             ON br.discord_user_id = u.discord_user_id        
         WHERE br.completed IS NULL AND br.rejected IS NULL AND br.cancelled IS NULL
-        ORDER BY br.created DESC 
-        `, (err, results, fields) => {
+        ORDER BY br.created DESC LIMIT ? OFFSET ?
+        `, [limit, offset], (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
@@ -360,14 +363,17 @@ const getActiveRequests = (req, res, connection) => {
 }
 
 const getRequests = (req, res, connection) => {
-    connection.query(
+    const limit = req.query.limit || 1000
+    const offset = req.query.offset || 0
+
+    connection.execute(
         `
         SELECT br.*, u.nickname 
         FROM bank_requests br 
             INNER JOIN users u
             ON br.discord_user_id = u.discord_user_id        
-        ORDER BY br.created DESC
-        `, (err, results, fields) => {
+        ORDER BY br.created DESC LIMIT ? OFFSET ?
+        `, [limit, offset], (err, results, fields) => {
         if (err) {
             console.error(err)
             res.status(500).send('Server error')
