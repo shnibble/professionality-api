@@ -5,7 +5,7 @@ const get = (req, res, connection) => {
     const limit = req.query.limit || 1000
     const offset = req.query.offset || 0
 
-    connection.query( 
+    connection.execute( 
         `
         SELECT e.*, a.signed_up, a.called_out, a.character_id, a.role_id, a.tentative, a.late, a.note,
 		(SELECT COUNT(*) FROM attendance 
@@ -60,7 +60,7 @@ const getPast = (req, res, connection) => {
     const limit = req.query.limit || 1000
     const offset = req.query.offset || 0
 
-    connection.query( 
+    connection.execute( 
         `
         SELECT e.*,
 		(SELECT COUNT(*) FROM attendance 
