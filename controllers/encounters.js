@@ -4,10 +4,8 @@ const getEncounterHealers = (encounter_id, connection) => {
     return new Promise((resolve, reject) => {
         connection.execute('SELECT * FROM encounter_healers WHERE encounter_id = ? ORDER BY id', [encounter_id], async (err, results, fields) => {
             if (err) {
-                console.log('getEncounterHealers() rejected:', err)
                 reject(err)
             } else {
-                console.log('getEnceounterHealers() resolved!')
                 resolve(results)
             }
         })
@@ -54,7 +52,7 @@ const get = (req, res, connection) => {
                 try {
                     encounters[i].assignments = await getEncounterAssignments(encounters[i].id, connection)
                 } catch(err) {
-                    res.status(500).send('Server error 1')
+                    res.status(500).send('Server error')
                 }
             }
 
@@ -65,7 +63,7 @@ const get = (req, res, connection) => {
                     try {
                         encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
                     } catch(err) {
-                        res.status(500).send('Server error 2')
+                        res.status(500).send('Server error')
                     }
                 }
             }
@@ -75,7 +73,7 @@ const get = (req, res, connection) => {
                 try {
                     encounters[i].healers = await getEncounterHealers(encounters[i].id, connection)
                 } catch(err) {
-                    res.status(500).send(err)
+                    res.status(500).send('Server error')
                 }
             }
 
