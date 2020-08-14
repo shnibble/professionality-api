@@ -133,20 +133,15 @@ const verify = (req, res) => {
         // verify jwt
         JWT.verify(jwt)
         .then(data => {
-
-            // if invalid return 400
-            if (!data) {
-                res.status(400).send('Invalid token')
-
-            // else return the body of the jwt data
-            } else {
-                res.status(200).json({
-                    discord_user_id: data.body.discord_user_id,
-                    is_member: data.body.is_member,
-                    is_officer: data.body.is_officer,
-                    nickname: data.body.nickname
-                })
-            }
+            res.status(200).json({
+                discord_user_id: data.body.discord_user_id,
+                is_member: data.body.is_member,
+                is_officer: data.body.is_officer,
+                nickname: data.body.nickname
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }

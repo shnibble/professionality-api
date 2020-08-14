@@ -29,27 +29,24 @@ const addGoal = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
             } else {
 
-                // confirm officer rank
-                if (!jwt_data.body.is_officer) {
-                    res.status(403).send('Forbidden')
-                } else {
-
-                    // insert new goal
-                    connection.execute(`INSERT INTO bank_goals (title, description, ep_reward) VALUES (?, ?, ?)`, [title, description, ep_reward], (err, results, fields) => {
-                        if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
-                        } else {
-                            res.status(200).send('Success')
-                        }
-                    })
-                }
+                // insert new goal
+                connection.execute(`INSERT INTO bank_goals (title, description, ep_reward) VALUES (?, ?, ?)`, [title, description, ep_reward], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        res.status(200).send('Success')
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -68,40 +65,37 @@ const deleteGoal = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
             } else {
 
-                // confirm officer rank
-                if (!jwt_data.body.is_officer) {
-                    res.status(403).send('Forbidden')
-                } else {
-
-                    // confirm goal exists
-                    connection.execute('SELECT * FROM bank_goals WHERE id = ?', [goal_id], (err, results, fields) => {
-                        if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
+                // confirm goal exists
+                connection.execute('SELECT * FROM bank_goals WHERE id = ?', [goal_id], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        if (results.length === 0) {
+                            res.status(400).send('Bad request')
                         } else {
-                            if (results.length === 0) {
-                                res.status(400).send('Bad request')
-                            } else {
 
-                                // delete goal
-                                connection.execute(`DELETE FROM bank_goals WHERE id = ?`, [goal_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // delete goal
+                            connection.execute(`DELETE FROM bank_goals WHERE id = ?`, [goal_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
-                    })
-                }
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -122,40 +116,37 @@ const updateGoal = (req, res, connection) => {
          JWT.verify(jwt)
          .then(jwt_data => {
  
-             // if invalid return 400
-             if (!jwt_data) {
-                 res.status(400).send('Invalid token')
-             } else {
- 
-                 // confirm officer rank
-                 if (!jwt_data.body.is_officer) {
-                     res.status(403).send('Forbidden')
-                 } else {
-                     
-                    // confirm goal exists
-                    connection.execute('SELECT * FROM bank_goals WHERE id = ?', [goal_id], (err, results, fields) => {
-                        if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
+                // confirm officer rank
+                if (!jwt_data.body.is_officer) {
+                    res.status(403).send('Forbidden')
+                } else {
+                    
+                // confirm goal exists
+                connection.execute('SELECT * FROM bank_goals WHERE id = ?', [goal_id], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        if (results.length === 0) {
+                            res.status(400).send('Bad request')
                         } else {
-                            if (results.length === 0) {
-                                res.status(400).send('Bad request')
-                            } else {
 
-                                // update goal
-                                connection.execute('UPDATE bank_goals SET title = ?, description = ?, ep_reward = ? WHERE id = ?', [title, description, ep_reward, goal_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err) 
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // update goal
+                            connection.execute('UPDATE bank_goals SET title = ?, description = ?, ep_reward = ? WHERE id = ?', [title, description, ep_reward, goal_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err) 
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
-                    })
-                 }
-             }
+                    }
+                })
+            }
+         })
+         .catch(err => {
+             res.status(400).send('Invalid token')
          })
      }
 }
@@ -192,27 +183,24 @@ const addInventory = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
             } else {
 
-                // confirm officer rank
-                if (!jwt_data.body.is_officer) {
-                    res.status(403).send('Forbidden')
-                } else {
-
-                    // insert new inventory
-                    connection.execute(`INSERT INTO bank_inventory (item_id, name, quality, icon, category_id, random_enchantment) VALUES (?, ?, ?, ?, ?, ?)`, [item_id, name, quality, icon, category_id, random_enchantment], (err, results, fields) => {
-                        if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
-                        } else {
-                            res.status(200).send('Success')
-                        }
-                    })
-                }
+                // insert new inventory
+                connection.execute(`INSERT INTO bank_inventory (item_id, name, quality, icon, category_id, random_enchantment) VALUES (?, ?, ?, ?, ?, ?)`, [item_id, name, quality, icon, category_id, random_enchantment], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        res.status(200).send('Success')
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -230,40 +218,37 @@ const deleteInventory = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
             } else {
 
-                // confirm officer rank
-                if (!jwt_data.body.is_officer) {
-                    res.status(403).send('Forbidden')
-                } else {
-
-                    // confirm inventory exists
-                    connection.execute('SELECT * FROM bank_inventory WHERE id = ?', [inventory_id], (err, results, fields) => {
-                        if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
+                // confirm inventory exists
+                connection.execute('SELECT * FROM bank_inventory WHERE id = ?', [inventory_id], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        if (results.length === 0) {
+                            res.status(400).send('Bad request')
                         } else {
-                            if (results.length === 0) {
-                                res.status(400).send('Bad request')
-                            } else {
 
-                                // delete inventory
-                                connection.execute(`DELETE FROM bank_inventory WHERE id = ?`, [inventory_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // delete inventory
+                            connection.execute(`DELETE FROM bank_inventory WHERE id = ?`, [inventory_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
-                    })
-                }
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -281,40 +266,37 @@ const updateInventory = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
             } else {
 
-                // confirm officer rank
-                if (!jwt_data.body.is_officer) {
-                    res.status(403).send('Forbidden')
-                } else {
-
-                    // confirm inventory exists
-                    connection.execute('SELECT * FROM bank_inventory WHERE id = ?', [inventory_id], (err, results, fields) => {
-                        if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
+                // confirm inventory exists
+                connection.execute('SELECT * FROM bank_inventory WHERE id = ?', [inventory_id], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        if (results.length === 0) {
+                            res.status(400).send('Bad request')
                         } else {
-                            if (results.length === 0) {
-                                res.status(400).send('Bad request')
-                            } else {
 
-                                // update inventory
-                                connection.execute(`UPDATE bank_inventory SET category_id = ? WHERE id = ?`, [category_id, inventory_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // update inventory
+                            connection.execute(`UPDATE bank_inventory SET category_id = ? WHERE id = ?`, [category_id, inventory_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
-                    })
-                }
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -416,27 +398,24 @@ const addRequest = (req, res, Connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
+            // confirm member rank
+            if (!jwt_data.body.is_member) {
+                res.status(403).send('Forbidden')
             } else {
 
-                // confirm member rank
-                if (!jwt_data.body.is_member) {
-                    res.status(403).send('Forbidden')
-                } else {
-
-                    // insert request
-                    connection.execute('INSERT INTO bank_requests (message, timeframe, discord_user_id) VALUES (?, ?, ?)', [message, timeframe, jwt_data.body.discord_user_id], (err, results, fields) => {
-                        if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
-                        } else {
-                            res.status(200).send('Success')
-                        }
-                    })
-                }
+                // insert request
+                connection.execute('INSERT INTO bank_requests (message, timeframe, discord_user_id) VALUES (?, ?, ?)', [message, timeframe, jwt_data.body.discord_user_id], (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        res.status(200).send('Success')
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -453,40 +432,37 @@ const cancelRequest = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
-
-                // confirm request exists
-                connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+            // confirm request exists
+            connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
-                        if (results.length === 0) {
-                            res.status(400).send('Bad request')
+
+                        // confirm user who created request
+                        if (!jwt_data.body.discord_user_id === results[0].discord_user_id) {
+                            res.status(403).send('Forbidden')
                         } else {
 
-                            // confirm user who created request
-                            if (!jwt_data.body.discord_user_id === results[0].discord_user_id) {
-                                res.status(403).send('Forbidden')
-                            } else {
-
-                                // cancel request
-                                connection.execute('UPDATE bank_requests SET cancelled = NOW() WHERE id = ?', [request_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // cancel request
+                            connection.execute('UPDATE bank_requests SET cancelled = NOW() WHERE id = ?', [request_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -503,40 +479,37 @@ const deleteRequest = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
-
-                // confirm request exists
-                connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+            // confirm request exists
+            connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
-                        if (results.length === 0) {
-                            res.status(400).send('Bad request')
+
+                        // confirm officer rank
+                        if (!jwt_data.body.is_officer) {
+                            res.status(403).send('Forbidden')
                         } else {
 
-                            // confirm officer rank
-                            if (!jwt_data.body.is_officer) {
-                                res.status(403).send('Forbidden')
-                            } else {
-
-                                // delete request
-                                connection.execute('DELETE FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // delete request
+                            connection.execute('DELETE FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -554,40 +527,37 @@ const completeRequest = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
-
-                // confirm request exists
-                connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+            // confirm request exists
+            connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
-                        if (results.length === 0) {
-                            res.status(400).send('Bad request')
+
+                        // confirm officer rank 
+                        if (!jwt_data.body.is_officer) {
+                            res.status(403).send('Forbidden')
                         } else {
 
-                            // confirm officer rank 
-                            if (!jwt_data.body.is_officer) {
-                                res.status(403).send('Forbidden')
-                            } else {
-
-                                // complete request
-                                connection.execute('UPDATE bank_requests SET completed = NOW() WHERE id = ?', [request_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // complete request
+                            connection.execute('UPDATE bank_requests SET completed = NOW() WHERE id = ?', [request_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -604,40 +574,37 @@ const rejectRequest = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
-
-                // confirm request exists
-                connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+            // confirm request exists
+            connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
-                        if (results.length === 0) {
-                            res.status(400).send('Bad request')
+
+                        // confirm officer rank 
+                        if (!jwt_data.body.is_officer) {
+                            res.status(403).send('Forbidden')
                         } else {
 
-                            // confirm officer rank 
-                            if (!jwt_data.body.is_officer) {
-                                res.status(403).send('Forbidden')
-                            } else {
-
-                                // complete request
-                                connection.execute('UPDATE bank_requests SET rejected = NOW(), rejected_reason = ? WHERE id = ?', [rejected_reason, request_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // complete request
+                            connection.execute('UPDATE bank_requests SET rejected = NOW(), rejected_reason = ? WHERE id = ?', [rejected_reason, request_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -654,40 +621,37 @@ const addRequestComment = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
-
-                // confirm request exists
-                connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+            // confirm request exists
+            connection.execute('SELECT * FROM bank_requests WHERE id = ?', [request_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
-                        if (results.length === 0) {
-                            res.status(400).send('Bad request')
+
+                        // confirm officer rank or creator of the request
+                        if (!jwt_data.body.is_officer && !jwt_data.body.discord_user_id === results[0].discord_user_id) {
+                            res.status(403).send('Forbidden')
                         } else {
 
-                            // confirm officer rank or creator of the request
-                            if (!jwt_data.body.is_officer && !jwt_data.body.discord_user_id === results[0].discord_user_id) {
-                                res.status(403).send('Forbidden')
-                            } else {
-
-                                // add comment
-                                connection.execute('INSERT INTO bank_request_comments (bank_request_id, discord_user_id, message) VALUES (?, ?, ?)', [request_id, jwt_data.body.discord_user_id, message], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // add comment
+                            connection.execute('INSERT INTO bank_request_comments (bank_request_id, discord_user_id, message) VALUES (?, ?, ?)', [request_id, jwt_data.body.discord_user_id, message], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }

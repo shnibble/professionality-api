@@ -13,21 +13,18 @@ const add = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
-
-                // insert new character
-                connection.execute('INSERT INTO characters (`discord_user_id`, `name`, `race_id`, `class_id`, `role_id`) VALUES (?, ?, ?, ?, ?)', [jwt_data.body.discord_user_id, character_name, character_race_id, character_class_id, character_role_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
-                    } else {
-                        res.status(200).send('Success')
-                    }
-                })
-            }
+            // insert new character
+            connection.execute('INSERT INTO characters (`discord_user_id`, `name`, `race_id`, `class_id`, `role_id`) VALUES (?, ?, ?, ?, ?)', [jwt_data.body.discord_user_id, character_name, character_race_id, character_class_id, character_role_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+                    res.status(200).send('Success')
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -45,42 +42,39 @@ const deleteCharacter = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
+            // get character discord user id
+            connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
 
-                // get character discord user id
-                connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+                    // confirm character exists
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
 
-                        // confirm character exists
-                        if (results.length === 0) {
+                        // confirm character belongs to user
+                        if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
                             res.status(400).send('Bad request')
                         } else {
 
-                            // confirm character belongs to user
-                            if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
-                                res.status(400).send('Bad request')
-                            } else {
-
-                                // update character
-                                connection.execute('UPDATE `characters` SET `enabled` = FALSE WHERE id = ?', [character_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // update character
+                            connection.execute('UPDATE `characters` SET `enabled` = FALSE WHERE id = ?', [character_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -97,42 +91,39 @@ const editRace = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
+            // get character discord user id
+            connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
 
-                // get character discord user id
-                connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+                    // confirm character exists
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
 
-                        // confirm character exists
-                        if (results.length === 0) {
+                        // confirm character belongs to user
+                        if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
                             res.status(400).send('Bad request')
                         } else {
 
-                            // confirm character belongs to user
-                            if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
-                                res.status(400).send('Bad request')
-                            } else {
-
-                                // update character
-                                connection.execute('UPDATE `characters` SET `race_id` = ? WHERE id = ?', [race_id, character_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // update character
+                            connection.execute('UPDATE `characters` SET `race_id` = ? WHERE id = ?', [race_id, character_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -149,42 +140,39 @@ const editClass = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
+            // get character discord user id
+            connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
 
-                // get character discord user id
-                connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+                    // confirm character exists
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
 
-                        // confirm character exists
-                        if (results.length === 0) {
+                        // confirm character belongs to user
+                        if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
                             res.status(400).send('Bad request')
                         } else {
 
-                            // confirm character belongs to user
-                            if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
-                                res.status(400).send('Bad request')
-                            } else {
-
-                                // update character
-                                connection.execute('UPDATE `characters` SET `class_id` = ? WHERE id = ?', [class_id, character_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // update character
+                            connection.execute('UPDATE `characters` SET `class_id` = ? WHERE id = ?', [class_id, character_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -201,42 +189,39 @@ const editRole = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
+            // get character discord user id
+            connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
 
-                // get character discord user id
-                connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+                    // confirm character exists
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
 
-                        // confirm character exists
-                        if (results.length === 0) {
+                        // confirm character belongs to user
+                        if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
                             res.status(400).send('Bad request')
                         } else {
 
-                            // confirm character belongs to user
-                            if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
-                                res.status(400).send('Bad request')
-                            } else {
-
-                                // update character
-                                connection.execute('UPDATE `characters` SET `role_id` = ? WHERE id = ?', [role_id, character_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // update character
+                            connection.execute('UPDATE `characters` SET `role_id` = ? WHERE id = ?', [role_id, character_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -253,42 +238,39 @@ const editAttunements = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
+            // get character discord user id
+            connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
 
-                // get character discord user id
-                connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+                    // confirm character exists
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
 
-                        // confirm character exists
-                        if (results.length === 0) {
+                        // confirm character belongs to user
+                        if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
                             res.status(400).send('Bad request')
                         } else {
 
-                            // confirm character belongs to user
-                            if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
-                                res.status(400).send('Bad request')
-                            } else {
-
-                                // update character
-                                connection.execute('UPDATE `characters` SET `attuned_mc` = ?, `attuned_ony` = ?, `attuned_bwl` = ?, `attuned_naxx` = ? WHERE id = ?', [attuned_mc, attuned_ony, attuned_bwl, attuned_naxx, character_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // update character
+                            connection.execute('UPDATE `characters` SET `attuned_mc` = ?, `attuned_ony` = ?, `attuned_bwl` = ?, `attuned_naxx` = ? WHERE id = ?', [attuned_mc, attuned_ony, attuned_bwl, attuned_naxx, character_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -315,42 +297,39 @@ const editProfessions = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
+            // get character discord user id
+            connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
 
-                // get character discord user id
-                connection.execute('SELECT * FROM `characters` WHERE `id` = ?', [character_id], (err, results, fields) => {
-                    if (err) {
-                        console.error(err)
-                        res.status(500).send('Server error')
+                    // confirm character exists
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
                     } else {
 
-                        // confirm character exists
-                        if (results.length === 0) {
+                        // confirm character belongs to user
+                        if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
                             res.status(400).send('Bad request')
                         } else {
 
-                            // confirm character belongs to user
-                            if (jwt_data.body.discord_user_id !== results[0].discord_user_id) {
-                                res.status(400).send('Bad request')
-                            } else {
-
-                                // update character
-                                connection.execute('UPDATE `characters` SET `profession_id_one` = ?, `profession_id_two` = ? WHERE id = ?', [profession_id_one, profession_id_two, character_id], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
-                                        res.status(200).send('Success')
-                                    }
-                                })
-                            }
+                            // update character
+                            connection.execute('UPDATE `characters` SET `profession_id_one` = ?, `profession_id_two` = ? WHERE id = ?', [profession_id_one, profession_id_two, character_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    res.status(200).send('Success')
+                                }
+                            })
                         }
                     }
-                })
-            }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }

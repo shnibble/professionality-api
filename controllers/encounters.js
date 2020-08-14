@@ -128,36 +128,33 @@ const deleteEncounter = (req, res, connection) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
             } else {
 
-                // confirm officer rank
-                if (!jwt_data.body.is_officer) {
-                    res.status(403).send('Forbidden')
-                } else {
+                // confirm encounter exists
+                connection.execute('SELECT * FROM encounters WHERE id = ?', [encounter_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
 
-                    // confirm encounter exists
-                    connection.execute('SELECT * FROM encounters WHERE id = ?', [encounter_id], (err, results, fields) => {
-                        if (err) {
-                            res.status(500).send('Server error')
-                        } else if (results.length === 0) {
-                            res.status(400).send('Bad request')
-                        } else {
-
-                            // delete encounter
-                            connection.execute('DELETE FROM encounters WHERE id = ?', [encounter_id], (err, results, fields) => {
-                                if (err) {
-                                    res.status(500).send('Server error')
-                                } else {
-                                    res.status(200).send('Success')
-                                }
-                            })
-                        }
-                    })
-                }
+                        // delete encounter
+                        connection.execute('DELETE FROM encounters WHERE id = ?', [encounter_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }

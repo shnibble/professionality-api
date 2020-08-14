@@ -119,31 +119,28 @@ const add = (req, res, connection, bot) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
+            // confirm officer rank
+            if (jwt_data.body.is_officer) {
 
-                // confirm officer rank
-                if (jwt_data.body.is_officer) {
-
-                    // insert event
-                    connection.execute('INSERT INTO `events` (title, start) VALUES (?, ?)', [title, start], (err, result, fields) => {
-                        if (err) {
-                            console.error(err)
-                            res.status(500).send('Server error')
-                        } else {
-                            const event = {
-                                id: result.insertId,
-                                title,
-                                start
-                            }
-                            bot.postNewCalendarEvent(event)
-                            res.status(200).send('Success')
+                // insert event
+                connection.execute('INSERT INTO `events` (title, start) VALUES (?, ?)', [title, start], (err, result, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        const event = {
+                            id: result.insertId,
+                            title,
+                            start
                         }
-                    })
-                }
+                        bot.postNewCalendarEvent(event)
+                        res.status(200).send('Success')
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
@@ -159,41 +156,36 @@ const deleteEvent = (req, res, connection, bot) => {
         JWT.verify(jwt)
         .then(jwt_data => {
 
-            // if invalid return 400
-            if (!jwt_data) {
-                res.status(400).send('Invalid token')
-            } else {
+            // confirm officer rank
+            if (jwt_data.body.is_officer) {
 
-                // confirm officer rank
-                if (jwt_data.body.is_officer) {
+                // confirm event exists
+                connection.execute('SELECT * FROM `events` WHERE id = ?', [event_id], (err, result, fields) => {
+                    if (err) {
+                        res.status(400).send('Bad request')
+                    } else {
+                        const message_id = result[0].message_id
+                        
+                        // delete event
+                        connection.execute('DELETE FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
+                            if (err) {
+                                console.error(err)
+                                res.status(500).send('Server error')
+                            } else {
 
-                    // confirm event exists
-                    connection.execute('SELECT * FROM `events` WHERE id = ?', [event_id], (err, result, fields) => {
-                        if (err) {
-                            res.status(400).send('Bad request')
-                        } else {
-                            const message_id = result[0].message_id
-                            
-                            // delete event
-                            connection.execute('DELETE FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
-                                if (err) {
-                                    console.error(err)
-                                    res.status(500).send('Server error')
-                                } else {
-
-                                    // if message_id was found then send directive to bot to delete the event message
-                                    if (message_id) {
-                                        bot.deleteCalendarEventMessage(message_id)
-                                    }                                    
-                                    res.status(200).send('Success')
-                                }
-                            })
-                        }
-                    })
-
-                    
-                }
+                                // if message_id was found then send directive to bot to delete the event message
+                                if (message_id) {
+                                    bot.deleteCalendarEventMessage(message_id)
+                                }                                    
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
             }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
         })
     }
 }
