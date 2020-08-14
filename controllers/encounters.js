@@ -34,17 +34,32 @@ const get = (req, res, connection) => {
     // get instance encounters
     connection.execute('SELECT * FROM encounters WHERE instance_id = ? ORDER BY id', [instance_id], async (err, results, fields) => {
         if (err) {
-            res.status(500).send('Server error')
+            res.status(500).send('Server error 1')
         } else {
 
             let encounters = results
+            
+            // get encounter assignments
             for (let i = 0; i < encounters.length; i++) {
-                encounters[i].assignments = await getEncounterAssignments(encounters[i].id, connection)
+                try {
+                    encounters[i].assignments = await getEncounterAssignments(encounters[i].id, connection)
+                } catch(err) {
+                    console.log('Caught error 2:', err)
+                    res.status(500).send('Server error 2')
+                }
+            }
+
+            // get assignment supports
+            for (let i = 0; i < encounters.length; i++) {
                 
                 for (let n = 0; n < encounters[i].assignments.length; n++) {
-                    encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
+                    try {
+                        encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
+                    } catch(err) {
+                        console.log('Caught error 3:', err)
+                        res.status(500).send('Server error 3')
+                    }
                 }
-
             }
 
             // return results
