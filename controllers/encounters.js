@@ -1,13 +1,23 @@
 // const JWT = require('../util/jwt')
 
+const getEncounterHealers = (encounter_id, connection) => {
+    return new Promise((resolve, reject) => {
+        connection.execute('SELECT * FROM encounter_healers WHERE encounter_id = ? ORDER BY id', [encounter_id], async (err, results, fields) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(results)
+            }
+        })
+    })
+}
+
 const getAssignmentSupports = (assignment_id, connection) => {
     return new Promise((resolve, reject) => {
         connection.execute('SELECT * FROM assignment_supports WHERE assignment_id = ? ORDER BY id', [assignment_id], (err, results, fields) => {
             if (err) {
-                console.log('getAssignmentSupports() rejected...')
                 reject(err)
             } else {
-                console.log('getAssignmentSupports() resolved...')
                 resolve(results)
             }
         })
@@ -18,10 +28,8 @@ const getEncounterAssignments = (encounter_id, connection) => {
     return new Promise((resolve, reject) => {
         connection.execute('SELECT * FROM encounter_assignments WHERE encounter_id = ? ORDER BY id', [encounter_id], async (err, results, fields) => {
             if (err) {
-                console.log('getEncounterAssignments() rejected...')
                 reject(err)
             } else {
-                console.log('getEncounterAssignments() resolved...')
                 resolve(results)
             }
         })
@@ -34,7 +42,7 @@ const get = (req, res, connection) => {
     // get instance encounters
     connection.execute('SELECT * FROM encounters WHERE instance_id = ? ORDER BY id', [instance_id], async (err, results, fields) => {
         if (err) {
-            res.status(500).send('Server error 1')
+            res.status(500).send('Server error')
         } else {
 
             let encounters = results
@@ -44,8 +52,7 @@ const get = (req, res, connection) => {
                 try {
                     encounters[i].assignments = await getEncounterAssignments(encounters[i].id, connection)
                 } catch(err) {
-                    console.log('Caught error 2:', err)
-                    res.status(500).send('Server error 2')
+                    res.status(500).send('Server error')
                 }
             }
 
@@ -56,9 +63,17 @@ const get = (req, res, connection) => {
                     try {
                         encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
                     } catch(err) {
-                        console.log('Caught error 3:', err)
-                        res.status(500).send('Server error 3')
+                        res.status(500).send('Server error')
                     }
+                }
+            }
+
+            // get encounter healers
+            for (let i = 0; i < encounters.length; i++) {
+                try {
+                    encounters[i].healers = await getEncounterHealers(encounters[i].id, connection)
+                } catch(err) {
+                    res.status(500).send('Server error')
                 }
             }
 
