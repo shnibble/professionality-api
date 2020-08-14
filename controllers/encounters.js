@@ -1,4 +1,4 @@
-// const JWT = require('../util/jwt')
+const JWT = require('../util/jwt')
 
 const getEncounterHealers = (encounter_id, connection) => {
     return new Promise((resolve, reject) => {
