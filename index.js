@@ -12,6 +12,7 @@ const attendanceController = require('./controllers/attendance')
 const bankController = require('./controllers/bank')
 const calendarController = require('./controllers/calendar')
 const characterController = require('./controllers/character')
+const encountersContoller = require('./controllers/encounters')
 const eventController = require('./controllers/event')
 const itemsController = require('./controllers/items')
 const lootController = require('./controllers/loot')
@@ -99,6 +100,9 @@ app.post('/character/edit/class', (req, res) => characterController.editClass(re
 app.post('/character/edit/role', (req, res) => characterController.editRole(req, res, connection))
 app.post('/character/edit/attunements', (req, res) => characterController.editAttunements(req, res, connection))
 app.post('/character/edit/professions', (req, res) => characterController.editProfessions(req, res, connection))
+
+// encounters
+app.get('/encounters/get', (req, res) => encountersContoller.get(req, res, connection))
 
 // event
 app.get('/event/get', (req, res) => eventController.get(req, res, connection))
