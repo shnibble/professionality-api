@@ -38,7 +38,7 @@ const get = (req, res, connection) => {
                 try {
                     encounters[i].assignments = await getEncounterAssignments(encounters[i].id, connection)
                     
-                    for (let n = 0; i < encounters[i].assignments.length; n++) {
+                    for (let n = 0; n < encounters[i].assignments.length; n++) {
                         try {
                             encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
                         } catch(err) {
