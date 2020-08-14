@@ -4,8 +4,10 @@ const getAssignmentSupports = (assignment_id, connection) => {
     return new Promise((resolve, reject) => {
         connection.execute('SELECT * FROM assignment_supports WHERE assignment_id = ? ORDER BY id', [assignment_id], (err, results, fields) => {
             if (err) {
+                console.log('getAssignmentSupports() rejected...')
                 reject(err)
             } else {
+                console.log('getAssignmentSupports() resolved...')
                 resolve(results)
             }
         })
@@ -16,8 +18,10 @@ const getEncounterAssignments = (encounter_id, connection) => {
     return new Promise((resolve, reject) => {
         connection.execute('SELECT * FROM encounter_assignments WHERE encounter_id = ? ORDER BY id', [encounter_id], async (err, results, fields) => {
             if (err) {
+                console.log('getEncounterAssignments() rejected...')
                 reject(err)
             } else {
+                console.log('getEncounterAssignments() resolved...')
                 resolve(results)
             }
         })
@@ -32,19 +36,15 @@ const get = (req, res, connection) => {
         if (err) {
             res.status(500).send('Server error')
         } else {
+
             let encounters = results
-
-            try {
-                for (let i = 0; i < encounters.length; i++) {
-                    encounters[i].assignments = await getEncounterAssignments(encounters[i].id, connection)
-                    
-                    for (let n = 0; n < encounters[i].assignments.length; n++) {
-                        encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
-                    }
-
+            for (let i = 0; i < encounters.length; i++) {
+                encounters[i].assignments = await getEncounterAssignments(encounters[i].id, connection)
+                
+                for (let n = 0; n < encounters[i].assignments.length; n++) {
+                    encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
                 }
-            } catch(err) {
-                res.status(500).send('Server error')
+
             }
 
             // return results
