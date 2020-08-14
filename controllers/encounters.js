@@ -30,6 +30,9 @@ const get = (req, res, connection) => {
                     res.status(500).send('Server error')
                 }
             }
+
+            // return results
+            res.status(200).json(encounters)
         }
     })
 }
