@@ -34,21 +34,17 @@ const get = (req, res, connection) => {
         } else {
             let encounters = results
 
-            for (let i = 0; i < encounters.length; i++) {
-                try {
+            try {
+                for (let i = 0; i < encounters.length; i++) {
                     encounters[i].assignments = await getEncounterAssignments(encounters[i].id, connection)
                     
                     for (let n = 0; n < encounters[i].assignments.length; n++) {
-                        try {
-                            encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
-                        } catch(err) {
-                            res.status(500).send('Server error')
-                        }
+                        encounters[i].assignments[n].supports = await getAssignmentSupports(encounters[i].assignments[n].id, connection)
                     }
 
-                } catch(err) {
-                    res.status(500).send('Server error')
                 }
+            } catch(err) {
+                res.status(500).send('Server error')
             }
 
             // return results
