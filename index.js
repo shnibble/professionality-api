@@ -103,6 +103,8 @@ app.post('/character/edit/professions', (req, res) => characterController.editPr
 
 // encounters
 app.get('/encounters/get', (req, res) => encountersContoller.get(req, res, connection))
+app.post('/encounters/add', (req, res) => encountersContoller.add(req, res, connection))
+app.post('/encounters/delete', (req, res) => encountersContoller.deleteEncounter(req, res, connection))
 
 // event
 app.get('/event/get', (req, res) => eventController.get(req, res, connection))
