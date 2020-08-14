@@ -25,15 +25,18 @@ const get = (req, res, connection) => {
                                     res.status(500).send('Server error')
                                 } else {
                                     encounters[i].assignments[n].supports = results
+
+                                    if (i === encounters.length && n === encounters[i].assignments.length) {
+                                        
+                                        // return results
+                                        res.status(200).json(encounters)
+                                    }
                                 }
                             })
                         }
                     }
                 })
             }
-
-            // return results
-            res.status(200).json(encounters)
         }
     })
 }
