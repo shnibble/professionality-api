@@ -1,5 +1,16 @@
 const JWT = require('../util/jwt')
 
+const getActive = (req, res, connection) => {
+    connection.query('SELECT * FROM characters WHERE enabled = TRUE ORDER BY name', (err, results, fields) => {
+        if (err) {
+            console.error(err)
+            res.status(500).send('Server error')
+        } else {
+            res.status(200).json(results)
+        }
+    })
+}
+
 const add = (req, res, connection) => {
 
     // validate parameters
@@ -335,6 +346,7 @@ const editProfessions = (req, res, connection) => {
 }
 
 module.exports = {
+    getActive,
     add,
     deleteCharacter,
     editRace,

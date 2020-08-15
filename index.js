@@ -93,6 +93,8 @@ app.post('/calendar/add', (req, res) => calendarController.add(req, res, connect
 app.post('/calendar/delete', (req, res) => calendarController.deleteEvent(req, res, connection, bot))
 
 // character
+app.get('/character/getActive', (req, res) => characterController.getActive(req, res, connection))
+app.post('/character/add', (req, res) => characterController.add(req, res, connection))
 app.post('/character/add', (req, res) => characterController.add(req, res, connection))
 app.post('/character/delete', (req, res) => characterController.deleteCharacter(req, res, connection))
 app.post('/character/edit/race', (req, res) => characterController.editRace(req, res, connection))
