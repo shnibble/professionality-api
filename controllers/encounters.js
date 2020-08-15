@@ -274,6 +274,11 @@ const updateAssignmentMarker = (req, res, connection) => {
         res.status(400).send('Bad request')
     } else {
 
+        // cleanup variables
+        if (raid_marker_id === '') {
+            raid_marker_id = null
+        }
+
         // verify jwt
         JWT.verify(jwt)
         .then(jwt_data => {
@@ -317,6 +322,11 @@ const updateAssignmentTask = (req, res, connection) => {
         res.status(400).send('Bad request')
     } else {
 
+        // cleanup variables
+        if (task === '') {
+            task = null
+        }
+
         // verify jwt
         JWT.verify(jwt)
         .then(jwt_data => {
@@ -354,11 +364,17 @@ const updateAssignmentTask = (req, res, connection) => {
 
 const updateAssignmentCharacter = (req, res, connection) => {
     // validate parameters
-    const { jwt, assignment_id, character_id } = req.body
+    const { jwt, assignment_id } = req.body
+    let { character_id } = req.body
 
     if (typeof jwt === 'undefined' || typeof assignment_id === 'undefined' || typeof character_id === 'undefined') {
         res.status(400).send('Bad request')
     } else {
+
+        // cleanup variables
+        if (character_id === '') {
+            character_id = null
+        }
 
         // verify jwt
         JWT.verify(jwt)
