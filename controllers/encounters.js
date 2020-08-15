@@ -268,7 +268,8 @@ const deleteAssignment = (req, res, connection) => {
 
 const updateAssignmentMarker = (req, res, connection) => {
     // validate parameters
-    const { jwt, assignment_id, raid_marker_id } = req.body
+    const { jwt, assignment_id } = req.body
+    let { raid_marker_id } = req.body
 
     if (typeof jwt === 'undefined' || typeof assignment_id === 'undefined' || typeof raid_marker_id === 'undefined') {
         res.status(400).send('Bad request')
@@ -316,7 +317,8 @@ const updateAssignmentMarker = (req, res, connection) => {
 
 const updateAssignmentTask = (req, res, connection) => {
     // validate parameters
-    const { jwt, assignment_id, task } = req.body
+    const { jwt, assignment_id,  } = req.body
+    let { task } = req.body
 
     if (typeof jwt === 'undefined' || typeof assignment_id === 'undefined' || typeof task === 'undefined') {
         res.status(400).send('Bad request')
