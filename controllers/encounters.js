@@ -180,8 +180,228 @@ const deleteEncounter = (req, res, connection) => {
     }
 }
 
+const addAssignment = (req, res, connection) => {
+    // validate parameters
+    const { jwt, encounter_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof encounter_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm encounter exists
+                connection.execute('SELECT * FROM encounters WHERE id = ?', [encounter_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // add assignment
+                        connection.execute('INSERT INTO encounter_assignments (encounter_id) VALUES (?)', [encounter_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const deleteAssignment = (req, res, connection) => {
+    // validate parameters
+    const { jwt, assignment_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof assignment_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm assignment exists
+                connection.execute('SELECT * FROM encounter_assignments WHERE id = ?', [assignment_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // delete assignment
+                        connection.execute('DELETE FROM encounter_assignments WHERE id = ?', [assignment_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const updateAssignmentMarker = (req, res, connection) => {
+    // validate parameters
+    const { jwt, assignment_id, raid_marker_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof assignment_id === 'undefined' || typeof raid_marker_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm assignment exists
+                connection.execute('SELECT * FROM encounter_assignments WHERE id = ?', [assignment_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // update assignment
+                        connection.execute('UPDATE encounter_assignments SET raid_marker_id = ? WHERE id = ?', [raid_marker_id, assignment_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const updateAssignmentTask = (req, res, connection) => {
+    // validate parameters
+    const { jwt, assignment_id, task } = req.body
+
+    if (typeof jwt === 'undefined' || typeof assignment_id === 'undefined' || typeof task === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm assignment exists
+                connection.execute('SELECT * FROM encounter_assignments WHERE id = ?', [assignment_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // update assignment
+                        connection.execute('UPDATE encounter_assignments SET task = ? WHERE id = ?', [task, assignment_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const updateAssignmentCharacter = (req, res, connection) => {
+    // validate parameters
+    const { jwt, assignment_id, character_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof assignment_id === 'undefined' || typeof character_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm assignment exists
+                connection.execute('SELECT * FROM encounter_assignments WHERE id = ?', [assignment_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // update assignment
+                        connection.execute('UPDATE encounter_assignments SET character_id = ? WHERE id = ?', [character_id, assignment_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
 module.exports = {
     get,
     add,
-    deleteEncounter
+    deleteEncounter,
+    addAssignment,
+    deleteAssignment,
+    updateAssignmentMarker,
+    updateAssignmentTask,
+    updateAssignmentCharacter
 }

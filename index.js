@@ -105,6 +105,11 @@ app.post('/character/edit/professions', (req, res) => characterController.editPr
 app.get('/encounters/get', (req, res) => encountersContoller.get(req, res, connection))
 app.post('/encounters/add', (req, res) => encountersContoller.add(req, res, connection))
 app.post('/encounters/delete', (req, res) => encountersContoller.deleteEncounter(req, res, connection))
+app.post('/encounters/assignment/add', (req, res) => encountersContoller.addAssignment(req, res, connection))
+app.post('/encounters/assignment/delete', (req, res) => encountersContoller.deleteAssignment(req, res, connection))
+app.post('/encounters/assignment/update/marker', (req, res) => encountersContoller.updateAssignmentMarker(req, res, connection))
+app.post('/encounters/assignment/update/task', (req, res) => encountersContoller.updateAssignmentTask(req, res, connection))
+app.post('/encounters/assignment/update/character', (req, res) => encountersContoller.updateAssignmentCharacter(req, res, connection))
 
 // event
 app.get('/event/get', (req, res) => eventController.get(req, res, connection))
