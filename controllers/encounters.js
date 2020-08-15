@@ -2,7 +2,14 @@ const JWT = require('../util/jwt')
 
 const getEncounterHealers = (encounter_id, connection) => {
     return new Promise((resolve, reject) => {
-        connection.execute('SELECT * FROM encounter_healers WHERE encounter_id = ? ORDER BY id', [encounter_id], async (err, results, fields) => {
+        connection.execute(
+            `
+            SELECT eh.*, c.name as character_name, c.class_id as character_class_id 
+            FROM encounter_healers eh 
+                INNER JOIN characters c
+                ON c.id = ec.character_id 
+            WHERE eh.encounter_id = ? ORDER BY eh.id
+            `, [encounter_id], async (err, results, fields) => {
             if (err) {
                 reject(err)
             } else {
@@ -14,7 +21,14 @@ const getEncounterHealers = (encounter_id, connection) => {
 
 const getAssignmentSupports = (assignment_id, connection) => {
     return new Promise((resolve, reject) => {
-        connection.execute('SELECT * FROM assignment_supports WHERE assignment_id = ? ORDER BY id', [assignment_id], (err, results, fields) => {
+        connection.execute(
+            `
+            SELECT asup.*, c.name as character_name, c.class_id as character_class_id 
+            FROM assignment_supports asup 
+                INNER JOIN characters c
+                ON c.id = ec.character_id 
+            WHERE asup.assignment_id = ? ORDER BY asup.id
+            `, [assignment_id], (err, results, fields) => {
             if (err) {
                 reject(err)
             } else {
@@ -26,7 +40,14 @@ const getAssignmentSupports = (assignment_id, connection) => {
 
 const getEncounterAssignments = (encounter_id, connection) => {
     return new Promise((resolve, reject) => {
-        connection.execute('SELECT * FROM encounter_assignments WHERE encounter_id = ? ORDER BY id', [encounter_id], async (err, results, fields) => {
+        connection.execute(
+            `
+            SELECT ec.*, c.name as character_name, c.class_id as character_class_id 
+            FROM encounter_assignments ec 
+                INNER JOIN characters c
+                ON c.id = ec.character_id
+            WHERE ec.encounter_id = ? ORDER BY ec.id
+            `, [encounter_id], async (err, results, fields) => {
             if (err) {
                 reject(err)
             } else {
