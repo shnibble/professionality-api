@@ -7,7 +7,7 @@ const getEncounterHealers = (encounter_id, connection) => {
             SELECT eh.*, c.name as character_name, c.class_id as character_class_id 
             FROM encounter_healers eh 
                 INNER JOIN characters c
-                ON c.id = ec.character_id 
+                ON c.id = eh.character_id 
             WHERE eh.encounter_id = ? ORDER BY eh.id
             `, [encounter_id], async (err, results, fields) => {
             if (err) {
@@ -26,7 +26,7 @@ const getAssignmentSupports = (assignment_id, connection) => {
             SELECT asup.*, c.name as character_name, c.class_id as character_class_id 
             FROM assignment_supports asup 
                 INNER JOIN characters c
-                ON c.id = ec.character_id 
+                ON c.id = asup.character_id 
             WHERE asup.assignment_id = ? ORDER BY asup.id
             `, [assignment_id], (err, results, fields) => {
             if (err) {
