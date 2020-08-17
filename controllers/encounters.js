@@ -1,4 +1,5 @@
 const JWT = require('../util/jwt')
+const e = require('express')
 
 const getEncounterHealers = (encounter_id, connection) => {
     return new Promise((resolve, reject) => {
@@ -550,11 +551,19 @@ const updateAssignmentSupportCharacter = (req, res, connection) => {
 
 const updateAssignmentSupportHeal = (req, res, connection) => {
     // validate parameters
-    const { jwt, support_id, heal } = req.body
+    const { jwt, support_id } = req.body
+    let {  heal } = req.body
 
     if (typeof jwt === 'undefined' || typeof support_id === 'undefined' || typeof heal === 'undefined') {
         res.status(400).send('Bad request')
     } else {
+
+        // clean up variables
+        if (heal === 'true' || heal === 'TRUE' || heal === 1 || heal === '1') {
+            heal = true
+        } else {
+            heal = false
+        }
 
         // verify jwt
         JWT.verify(jwt)
@@ -568,7 +577,8 @@ const updateAssignmentSupportHeal = (req, res, connection) => {
                 // confirm support exists
                 connection.execute('SELECT * FROM assignment_supports WHERE id = ?', [support_id], (err, results, fields) => {
                     if (err) {
-                        res.status(500).send('Server error')
+                        console.log(err)
+                        res.status(500).send('Server error 1')
                     } else if (results.length === 0) {
                         res.status(400).send('Bad request')
                     } else {
@@ -576,7 +586,8 @@ const updateAssignmentSupportHeal = (req, res, connection) => {
                         // update support
                         connection.execute('UPDATE assignment_supports SET heal = ? WHERE id = ?', [heal, support_id], (err, results, fields) => {
                             if (err) {
-                                res.status(500).send('Server error')
+                                console.log(err)
+                                res.status(500).send('Server error 2')
                             } else {
                                 res.status(200).send('Success')
                             }
