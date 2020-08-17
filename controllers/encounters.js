@@ -702,6 +702,198 @@ const updateAssignmentSupportDecurse = (req, res, connection) => {
     }
 }
 
+
+
+
+
+
+
+
+
+const addEncounterHealer = (req, res, connection) => {
+    // validate parameters
+    const { jwt, encounter_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof encounter_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm encounter exists
+                connection.execute('SELECT * FROM encounters WHERE id = ?', [encounter_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // add healer
+                        connection.execute('INSERT INTO encounter_healers (encounter_id) VALUES (?)', [encounter_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const deleteEncounterHealer = (req, res, connection) => {
+    // validate parameters
+    const { jwt, healer_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof healer_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm healer exists
+                connection.execute('SELECT * FROM encounter_healers WHERE id = ?', [healer_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // delete healer
+                        connection.execute('DELETE FROM encounter_healers WHERE id = ?', [healer_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const updateEncounterHealerCharacter = (req, res, connection) => {
+    // validate parameters
+    const { jwt, healer_id } = req.body
+    let { character_id } = req.body
+
+    if (typeof jwt === 'undefined' || typeof healer_id === 'undefined' || typeof character_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // cleanup variables
+        if (character_id === '') {
+            character_id = null
+        }
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm healer exists
+                connection.execute('SELECT * FROM encounter_healers WHERE id = ?', [healer_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // update healer
+                        connection.execute('UPDATE encounter_healers SET character_id = ? WHERE id = ?', [character_id, healer_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const updateEncounterHealerTask = (req, res, connection) => {
+    // validate parameters
+    const { jwt, healer_id } = req.body
+    let { task } = req.body
+
+    if (typeof jwt === 'undefined' || typeof healer_id === 'undefined' || typeof task === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // cleanup variables
+        if (task === '') {
+            task = null
+        }
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+
+                // confirm healer exists
+                connection.execute('SELECT * FROM encounter_healers WHERE id = ?', [healer_id], (err, results, fields) => {
+                    if (err) {
+                        res.status(500).send('Server error')
+                    } else if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // update healer
+                        connection.execute('UPDATE encounter_healers SET task = ? WHERE id = ?', [task, healer_id], (err, results, fields) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
 module.exports = {
     get,
     add,
@@ -716,5 +908,9 @@ module.exports = {
     updateAssignmentSupportCharacter,
     updateAssignmentSupportHeal,
     updateAssignmentSupportDispel,
-    updateAssignmentSupportDecurse
+    updateAssignmentSupportDecurse,
+    addEncounterHealer,
+    deleteEncounterHealer,
+    updateEncounterHealerCharacter,
+    updateEncounterHealerTask
 }

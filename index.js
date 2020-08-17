@@ -118,6 +118,10 @@ app.post('/encounters/assignment/support/update/character', (req, res) => encoun
 app.post('/encounters/assignment/support/update/heal', (req, res) => encountersContoller.updateAssignmentSupportHeal(req, res, connection))
 app.post('/encounters/assignment/support/update/dispel', (req, res) => encountersContoller.updateAssignmentSupportDispel(req, res, connection))
 app.post('/encounters/assignment/support/update/decurse', (req, res) => encountersContoller.updateAssignmentSupportDecurse(req, res, connection))
+app.post('/encounters/healer/add', (req, res) => encountersContoller.addEncounterHealer(req, res, connection))
+app.post('/encounters/healer/delete', (req, res) => encountersContoller.deleteEncounterHealer(req, res, connection))
+app.post('/encounters/healer/update/character', (req, res) => encountersContoller.updateEncounterHealerCharacter(req, res, connection))
+app.post('/encounters/healer/update/task', (req, res) => encountersContoller.updateEncounterHealerTask(req, res, connection))
 
 // event
 app.get('/event/get', (req, res) => eventController.get(req, res, connection))
