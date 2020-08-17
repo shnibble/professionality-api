@@ -112,6 +112,12 @@ app.post('/encounters/assignment/delete', (req, res) => encountersContoller.dele
 app.post('/encounters/assignment/update/marker', (req, res) => encountersContoller.updateAssignmentMarker(req, res, connection))
 app.post('/encounters/assignment/update/task', (req, res) => encountersContoller.updateAssignmentTask(req, res, connection))
 app.post('/encounters/assignment/update/character', (req, res) => encountersContoller.updateAssignmentCharacter(req, res, connection))
+app.post('/encounters/assignment/support/add', (req, res) => encountersContoller.addAssignmentSupport(req, res, connection))
+app.post('/encounters/assignment/support/delete', (req, res) => encountersContoller.deleteAssignmentSupport(req, res, connection))
+app.post('/encounters/assignment/support/update/character', (req, res) => encountersContoller.updateAssignmentSupportCharacter(req, res, connection))
+app.post('/encounters/assignment/support/update/heal', (req, res) => encountersContoller.updateAssignmentSupportHeal(req, res, connection))
+app.post('/encounters/assignment/support/update/dispel', (req, res) => encountersContoller.updateAssignmentSupportDispel(req, res, connection))
+app.post('/encounters/assignment/support/update/decurse', (req, res) => encountersContoller.updateAssignmentSupportDecurse(req, res, connection))
 
 // event
 app.get('/event/get', (req, res) => eventController.get(req, res, connection))
