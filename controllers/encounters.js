@@ -577,8 +577,7 @@ const updateAssignmentSupportHeal = (req, res, connection) => {
                 // confirm support exists
                 connection.execute('SELECT * FROM assignment_supports WHERE id = ?', [support_id], (err, results, fields) => {
                     if (err) {
-                        console.log(err)
-                        res.status(500).send('Server error 1')
+                        res.status(500).send('Server error')
                     } else if (results.length === 0) {
                         res.status(400).send('Bad request')
                     } else {
@@ -586,8 +585,7 @@ const updateAssignmentSupportHeal = (req, res, connection) => {
                         // update support
                         connection.execute('UPDATE assignment_supports SET heal = ? WHERE id = ?', [heal, support_id], (err, results, fields) => {
                             if (err) {
-                                console.log(err)
-                                res.status(500).send('Server error 2')
+                                res.status(500).send('Server error')
                             } else {
                                 res.status(200).send('Success')
                             }
@@ -604,11 +602,19 @@ const updateAssignmentSupportHeal = (req, res, connection) => {
 
 const updateAssignmentSupportDispel = (req, res, connection) => {
     // validate parameters
-    const { jwt, support_id, dispel } = req.body
+    const { jwt, support_id } = req.body
+    let {  dispel } = req.body
 
     if (typeof jwt === 'undefined' || typeof support_id === 'undefined' || typeof dispel === 'undefined') {
         res.status(400).send('Bad request')
     } else {
+
+        // clean up variables
+        if (dispel === 'true' || dispel === 'TRUE' || dispel === 1 || dispel === '1') {
+            dispel = true
+        } else {
+            dispel = false
+        }
 
         // verify jwt
         JWT.verify(jwt)
@@ -647,11 +653,19 @@ const updateAssignmentSupportDispel = (req, res, connection) => {
 
 const updateAssignmentSupportDecurse = (req, res, connection) => {
     // validate parameters
-    const { jwt, support_id, decurse } = req.body
+    const { jwt, support_id } = req.body
+    let {  decurse } = req.body
 
     if (typeof jwt === 'undefined' || typeof support_id === 'undefined' || typeof decurse === 'undefined') {
         res.status(400).send('Bad request')
     } else {
+
+        // clean up variables
+        if (decurse === 'true' || decurse === 'TRUE' || decurse === 1 || decurse === '1') {
+            decurse = true
+        } else {
+            decurse = false
+        }
 
         // verify jwt
         JWT.verify(jwt)
