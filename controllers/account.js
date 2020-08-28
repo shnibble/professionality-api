@@ -155,7 +155,7 @@ const get = (req, res, connection) => {
     } else {
 
         // get user
-        connection.execute('SELECT `discord_user_id`, `nickname`, `member`, `officer` FROM `users` WHERE `discord_user_id` = ?', [discord_user_id], (err, results, fields) => {
+        connection.execute('SELECT * FROM `users` WHERE `discord_user_id` = ?', [discord_user_id], (err, results, fields) => {
             if (err) {
                 console.error(err)
                 res.status(500).send('Server error')
