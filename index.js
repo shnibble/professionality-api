@@ -71,7 +71,7 @@ app.post('/attendance/callout', (req, res) => attendanceController.callout(req, 
 app.post('/attendance/cancel', (req, res) => attendanceController.cancel(req, res, connection, bot))
 
 // availability
-app.post('/availablity/update', (req, res) => availabilityController.update(req, res, connection))
+app.post('/availability/update', (req, res) => availabilityController.update(req, res, connection))
 
 // bank
 app.get('/bank/goals/get', (req, res) => bankController.getGoals(req, res, connection))
