@@ -9,6 +9,7 @@ const port = 3000
 // controllers
 const accountController = require('./controllers/account')
 const attendanceController = require('./controllers/attendance')
+const availabilityController = require('./controllers/availability')
 const bankController = require('./controllers/bank')
 const calendarController = require('./controllers/calendar')
 const characterController = require('./controllers/character')
@@ -28,6 +29,7 @@ const bot = new Bot(connection)
 
 // initialize github webhook
 const GithubWebHook = require('express-github-webhook')
+const availability = require('./controllers/availability')
 const webhookHandler = GithubWebHook({ path: '/webhooks/github', secret: GITHUB_WEBHOOK_SECRET })
 
 // initialize express
@@ -67,6 +69,9 @@ app.get('/account/get', (req, res) => accountController.get(req, res, connection
 app.post('/attendance/signup', (req, res) => attendanceController.signup(req, res, connection, bot))
 app.post('/attendance/callout', (req, res) => attendanceController.callout(req, res, connection, bot))
 app.post('/attendance/cancel', (req, res) => attendanceController.cancel(req, res, connection, bot))
+
+// availability
+app.post('/availablity/update', (req, res) => availabilityController.update(req, res, connection))
 
 // bank
 app.get('/bank/goals/get', (req, res) => bankController.getGoals(req, res, connection))
