@@ -17,6 +17,7 @@ const encountersContoller = require('./controllers/encounters')
 const eventController = require('./controllers/event')
 const itemsController = require('./controllers/items')
 const lootController = require('./controllers/loot')
+const pugepgpController = require('./controllers/pugepgp')
 const rosterController = require('./controllers/roster')
 
 
@@ -138,6 +139,16 @@ app.get('/items/getDetails', (req, res) => itemsController.getDetails(req, res))
 // loot
 app.get('/loot/get', (req, res) => lootController.get(req, res, connection))
 app.post('/loot/update', (req, res) => lootController.update(req, res, connection))
+
+// pug epgp
+app.get('/pugepgp/get', (req, res) => pugepgpController.get(req, res, connection))
+app.post('/pugepgp/update', (req, res) => pugepgpController.updateEpgp(req, res, connection))
+app.post('/pugepgp/updateActiveEp', (req, res) => pugepgpController.updateActiveEp(req, res, connection))
+app.post('/pugepgp/applyDecay', (req, res) => pugepgpController.applyDecay(req, res, connection))
+app.post('/pugepgp/character/add', (req, res) => pugepgpController.addCharacter(req, res, connection))
+app.post('/pugepgp/character/delete', (req, res) => pugepgpController.deleteCharacter(req, res, connection))
+app.post('/pugepp/character/activate', (req, res) => pugepgpController.activateCharacter(req, res, connection))
+app.post('/pugepghp/character/deactivate', (req, res) => pugepgpController.deactivateCharacter(req, res, connection))
 
 // roster
 app.get('/roster/pugs', (req, res) => rosterController.getPugs(req, res, connection))
