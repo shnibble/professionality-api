@@ -71,10 +71,10 @@ const updateEpgp = (req, res, connection) => {
                         let new_gp = previous_gp
 
                         if (ep_amount) {
-                            new_ep = previous_ep + ep_amount
+                            new_ep = Number.parseFloat(previous_ep) + Number.parseFloat(ep_amount)
                         }
                         if (gp_amount) {
-                            new_gp = previous_gp + gp_amount
+                            new_gp = Number.parseFloat(previous_gp) + Number.parseFloat(gp_amount)
                         }
 
                         // update epgp and record transaction
@@ -83,7 +83,7 @@ const updateEpgp = (req, res, connection) => {
                                 console.error(err)
                                 res.status(500).send('Server error')
                             } else {
-                                connection.execute('INSERT INTO epgp_transactions (pug_id, ep_amount, gp_amount, note, previous_ep, previous_gp) VALUES (?, ?, ?, ? ,?, ?)', [id, ep_amount, gp_amount, note, previous_ep, previous_gp], (err, results, fields) => {
+                                connection.execute('INSERT INTO pug_epgp_transactions (pug_id, ep_amount, gp_amount, note, previous_ep, previous_gp) VALUES (?, ?, ?, ? ,?, ?)', [id, ep_amount, gp_amount, note, previous_ep, previous_gp], (err, results, fields) => {
                                     if (err) {
                                         console.error(err)
                                         res.status(500).send('Server error')
