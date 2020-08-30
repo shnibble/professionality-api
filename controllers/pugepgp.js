@@ -1,5 +1,6 @@
 const JWT = require('../util/jwt')
 const MINIMUM_GP = 20
+const TRANSACTION_LIMIT = 20
 
 const get = (req, res, connection) => {
     connection.query('SELECT id, name, ep, gp, (ep/gp) as pr FROM pug_epgp WHERE active = TRUE ORDER BY name', (err, results, fields) => {
@@ -27,7 +28,7 @@ const get = (req, res, connection) => {
                     let pending = data.active.length + data.active.length
 
                     data.active.map(row => {
-                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp DESC', [row.id], (err, results, fields) => {
+                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp DESC LIMIT ?', [row.id, TRANSACTION_LIMIT], (err, results, fields) => {
                             if (err) {
                                 console.error(err)
                                 res.status(500).send('Server error')
@@ -43,7 +44,7 @@ const get = (req, res, connection) => {
                     })
 
                     data.inactive.map(row => {
-                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp DESC', [row.id], (err, results, fields) => {
+                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp DESC LIMIT ?', [row.id, TRANSACTION_LIMIT], (err, results, fields) => {
                             if (err) {
                                 console.error(err)
                                 res.status(500).send('Server error')
