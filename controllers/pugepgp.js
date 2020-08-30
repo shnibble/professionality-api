@@ -1,4 +1,5 @@
 const JWT = require('../util/jwt')
+const MINIMUM_GP = 20
 
 const get = (req, res, connection) => {
     connection.query('SELECT id, name, ep, gp, (ep/gp) as pr FROM pug_epgp WHERE active = TRUE ORDER BY name', (err, results, fields) => {
@@ -6,18 +7,56 @@ const get = (req, res, connection) => {
             console.error(err)
             res.status(500).send('Server error')
         } else {
-            let active = results
+            const active = results
             connection.query('SELECT id, name, ep, gp, (ep/gp) as pr FROM pug_epgp WHERE active = FALSE ORDER BY name', (err, results, fields) => {
                 if (err) {
                     console.error(err)
                     res.status(500).send('Server error')
                 } else {
-                    let inactive = results
+                    const inactive = results
                     const data = {
                         active: active,
                         inactive: inactive
                     }
-                    res.status(200).json(data)
+
+                    // get transactions
+                    let final_data = {
+                        active: [],
+                        inactive: []
+                    }
+                    let pending = data.active.length + data.active.length
+
+                    data.active.map(row => {
+                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp', [row.id], (err, results, fields) => {
+                            if (err) {
+                                console.error(err)
+                                res.status(500).send('Server error')
+                            } else {
+                                row.transactions = results
+                                final_data.active.push(row)
+
+                                if (0 === --pending) {
+                                    res.status(200).json(final_data)
+                                }
+                            }
+                        })
+                    })
+                    
+                    data.inactive.map(row => {
+                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp', [row.id], (err, results, fields) => {
+                            if (err) {
+                                console.error(err)
+                                res.status(500).send('Server error')
+                            } else {
+                                row.transactions = results
+                                final_data.inactive.push(row)
+
+                                if (0 === --pending) {
+                                    res.status(200).json(final_data)
+                                }
+                            }
+                        })
+                    })
                 }
             })
         }
@@ -72,9 +111,17 @@ const updateEpgp = (req, res, connection) => {
 
                         if (ep_amount) {
                             new_ep = Number.parseFloat(previous_ep) + Number.parseFloat(ep_amount)
+
+                            if (new_ep < 0) {
+                                new_ep = 0
+                            }
                         }
                         if (gp_amount) {
                             new_gp = Number.parseFloat(previous_gp) + Number.parseFloat(gp_amount)
+
+                            if (new_gp < MINIMUM_GP) {
+                                new_gp = MINIMUM_GP
+                            }
                         }
 
                         // update epgp and record transaction
