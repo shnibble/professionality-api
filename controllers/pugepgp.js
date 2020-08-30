@@ -27,7 +27,7 @@ const get = (req, res, connection) => {
                     let pending = data.active.length + data.active.length
 
                     data.active.map(row => {
-                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp', [row.id], (err, results, fields) => {
+                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp DESC', [row.id], (err, results, fields) => {
                             if (err) {
                                 console.error(err)
                                 res.status(500).send('Server error')
@@ -41,9 +41,9 @@ const get = (req, res, connection) => {
                             }
                         })
                     })
-                    
+
                     data.inactive.map(row => {
-                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp', [row.id], (err, results, fields) => {
+                        connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp DESC', [row.id], (err, results, fields) => {
                             if (err) {
                                 console.error(err)
                                 res.status(500).send('Server error')
