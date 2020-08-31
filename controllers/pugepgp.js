@@ -153,6 +153,81 @@ const updateEpgp = (req, res, connection) => {
 
 const updateActiveEp = (req, res, connection) => {
 
+    // validate parameters
+    const { jwt, ep_amount } = req.body
+    let { note } = req.body
+
+    if (typeof jwt === 'undefined' || typeof ep_amount === '' || typeof note === '') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // cleanup variables
+        if (note === '') {
+            note = null
+        }
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (!jwt_data.body.is_officer) {
+                res.status(403).send('Forbidden')
+            } else {
+                
+                // get active pugs
+                connection.query('SELECT * FROM pug_epgp WHERE active = TRUE', (err, results, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+
+                        // iterate through active pugs
+                        let pending = results.length
+
+                        results.map(row => {
+
+                            // calculations
+                            const previous_ep = row.ep
+    
+                            let new_ep = previous_ep
+    
+                            if (ep_amount) {
+                                new_ep = Number.parseFloat(previous_ep) + Number.parseFloat(ep_amount)
+    
+                                if (new_ep < 0) {
+                                    new_ep = 0
+                                }
+                            }
+
+                            // update ep and record transaction
+                            connection.execute('UPDATE pug_epgp SET ep = ? WHERE id = ?', [new_ep, row.id], (err, results, fieldS) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    connection.execute('INSERT INTO pug_epgp_transactions (pug_id, ep_amount, gp_amount, note, previous_ep, previous_gp) VALUES (?, ?, ?, ? ,?, ?)', [row.id, ep_amount, null, note, previous_ep, row.gp], (err, results, fields) => {
+                                        if (err) {
+                                            console.error(err)
+                                            res.status(500).send('Server error')
+                                        } else {
+                                            if (0 === --pending) {
+                                                res.status(200).send('Success')
+                                            }
+                                        }
+                                    })
+                                }
+                            })
+
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
 }
 
 const applyDecay = (req, res, connection) => {
