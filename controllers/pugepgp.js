@@ -272,19 +272,15 @@ const applyDecay = (req, res, connection) => {
                             const ep_decay_amount = new_ep * DECAY_RATE * -1
                             const gp_decay_amount = new_gp * DECAY_RATE * -1
 
-                            if (ep_amount) {
-                                new_ep = Number.parseFloat(previous_ep) + Number.parseFloat(ep_decay_amount)
+                            new_ep = Number.parseFloat(previous_ep) + Number.parseFloat(ep_decay_amount)
 
-                                if (new_ep < 0) {
-                                    new_ep = 0
-                                }
+                            if (new_ep < 0) {
+                                new_ep = 0
                             }
-                            if (gp_amount) {
-                                new_gp = Number.parseFloat(previous_gp) + Number.parseFloat(gp_decay_amount)
-    
-                                if (new_gp < MINIMUM_GP) {
-                                    new_gp = MINIMUM_GP
-                                }
+                            new_gp = Number.parseFloat(previous_gp) + Number.parseFloat(gp_decay_amount)
+
+                            if (new_gp < MINIMUM_GP) {
+                                new_gp = MINIMUM_GP
                             }
 
                             // update epgp and record transaction
