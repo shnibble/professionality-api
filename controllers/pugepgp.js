@@ -27,7 +27,7 @@ const get = (req, res, connection) => {
                         active: [],
                         inactive: []
                     }
-                    let pending = data.active.length + data.active.length
+                    let pending = data.active.length + data.inactive.length
 
                     data.active.map(row => {
                         connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp DESC LIMIT ?', [row.id, TRANSACTION_LIMIT], (err, results, fields) => {
