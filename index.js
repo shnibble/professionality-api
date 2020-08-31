@@ -147,8 +147,8 @@ app.post('/pugepgp/updateActiveEp', (req, res) => pugepgpController.updateActive
 app.post('/pugepgp/applyDecay', (req, res) => pugepgpController.applyDecay(req, res, connection))
 app.post('/pugepgp/character/add', (req, res) => pugepgpController.addCharacter(req, res, connection))
 app.post('/pugepgp/character/delete', (req, res) => pugepgpController.deleteCharacter(req, res, connection))
-app.post('/pugepp/character/activate', (req, res) => pugepgpController.activateCharacter(req, res, connection))
-app.post('/pugepghp/character/deactivate', (req, res) => pugepgpController.deactivateCharacter(req, res, connection))
+app.post('/pugepgp/character/activate', (req, res) => pugepgpController.activateCharacter(req, res, connection))
+app.post('/pugepgp/character/deactivate', (req, res) => pugepgpController.deactivateCharacter(req, res, connection))
 
 // roster
 app.get('/roster/pugs', (req, res) => rosterController.getPugs(req, res, connection))
