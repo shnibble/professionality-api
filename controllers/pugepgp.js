@@ -29,6 +29,10 @@ const get = (req, res, connection) => {
                     }
                     let pending = data.active.length + data.inactive.length
 
+                    if (pending === 0) {
+                        res.status(200).json(final_data)
+                    }
+
                     data.active.map(row => {
                         connection.execute('SELECT * FROM pug_epgp_transactions WHERE pug_id = ? ORDER BY timestamp DESC LIMIT ?', [row.id, TRANSACTION_LIMIT], (err, results, fields) => {
                             if (err) {
