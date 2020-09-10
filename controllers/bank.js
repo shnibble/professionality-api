@@ -323,23 +323,27 @@ const getActiveRequests = (req, res, connection) => {
             let final_results = []
             let pending = results.length
 
-            results.map(row => {
-                connection.execute(
-                    `
-                    SELECT brc.*, u.nickname  
-                    FROM bank_request_comments brc 
-                        INNER JOIN users u
-                        ON brc.discord_user_id = u.discord_user_id 
-                    WHERE brc.bank_request_id = ? ORDER BY brc.timestamp
-                    `, [row.id], (err, result, fields) => {
-                    row.comments = result
-                    final_results.push(row)
+            if (pending === 0) {
+                res.status(200).json(final_results)
+            } else {
+                results.map(row => {
+                    connection.execute(
+                        `
+                        SELECT brc.*, u.nickname  
+                        FROM bank_request_comments brc 
+                            INNER JOIN users u
+                            ON brc.discord_user_id = u.discord_user_id 
+                        WHERE brc.bank_request_id = ? ORDER BY brc.timestamp
+                        `, [row.id], (err, result, fields) => {
+                        row.comments = result
+                        final_results.push(row)
 
-                    if (0 === --pending) {
-                        res.status(200).json(final_results)
-                    }
+                        if (0 === --pending) {
+                            res.status(200).json(final_results)
+                        }
+                    })
                 })
-            })
+            }
         }
     })
 }
@@ -365,23 +369,27 @@ const getRequests = (req, res, connection) => {
             let final_results = []
             let pending = results.length
 
-            results.map(row => {
-                connection.execute(
-                    `
-                    SELECT brc.*, u.nickname  
-                    FROM bank_request_comments brc 
-                        INNER JOIN users u
-                        ON brc.discord_user_id = u.discord_user_id 
-                    WHERE brc.bank_request_id = ? ORDER BY brc.timestamp
-                    `, [row.id], (err, result, fields) => {
-                    row.comments = result
-                    final_results.push(row)
+            if (pending === 0) {
+                res.status(200).json(final_results)
+            } else {
+                results.map(row => {
+                    connection.execute(
+                        `
+                        SELECT brc.*, u.nickname  
+                        FROM bank_request_comments brc 
+                            INNER JOIN users u
+                            ON brc.discord_user_id = u.discord_user_id 
+                        WHERE brc.bank_request_id = ? ORDER BY brc.timestamp
+                        `, [row.id], (err, result, fields) => {
+                        row.comments = result
+                        final_results.push(row)
 
-                    if (0 === --pending) {
-                        res.status(200).json(final_results)
-                    }
+                        if (0 === --pending) {
+                            res.status(200).json(final_results)
+                        }
+                    })
                 })
-            })
+            }
         }
     })
 }
