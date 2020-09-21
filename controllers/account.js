@@ -37,53 +37,45 @@ const login = (req, res, connection, bot) => {
 
                         // if new user then use bot to retrieve server-specific information
                         if (results.length === 0) {
-                            
-                            if (bot.checkIfUserExists(discord_user_id)) {
 
-                                // user exists on the discord server
-                                // check if they have the @member role
-                                const is_member = bot.checkIfUserIsMember(discord_user_id)
+                            // check if they have the @member role
+                            const is_member = bot.checkIfUserIsMember(discord_user_id)
 
-                                // check if they have the @officer role
-                                const is_officer = bot.checkIfUserIsOfficer(discord_user_id)
+                            // check if they have the @officer role
+                            const is_officer = bot.checkIfUserIsOfficer(discord_user_id)
 
-                                // get user nickname
-                                const nickname = bot.getUserNickname(discord_user_id)
+                            // get user nickname or default to username
+                            const nickname = bot.getUserNickname(discord_user_id) || discordUser.username
 
-                                // insert new user into db
-                                connection.execute('INSERT INTO `users` (`discord_user_id`, `nickname`, `member`, `officer`) VALUES (?, ?, ?, ?)', [discord_user_id, nickname, is_member, is_officer], (err, results, fields) => {
-                                    if (err) {
-                                        console.error(err)
-                                        res.status(500).send('Server error')
-                                    } else {
+                            // insert new user into db
+                            connection.execute('INSERT INTO `users` (`discord_user_id`, `nickname`, `member`, `officer`) VALUES (?, ?, ?, ?)', [discord_user_id, nickname, is_member, is_officer], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
 
-                                        // declare JWT variables
-                                        const claims = {
-                                            discord_user_id,
-                                            is_member,
-                                            is_officer,
-                                            nickname
-                                        }
-
-                                        // create JWT
-                                        const jwt = JWT.create(claims)
-
-                                        // return response to client
-                                        res.status(200).json({
-                                            jwt,
-                                            discord_user_id,
-                                            is_member,
-                                            is_officer,
-                                            nickname
-                                        })
+                                    // declare JWT variables
+                                    const claims = {
+                                        discord_user_id,
+                                        is_member,
+                                        is_officer,
+                                        nickname
                                     }
-                                })
-                            } else {
 
-                                // user does not exist on the discord server
-                                // return 403: forbidden
-                                res.status(403).send('Forbidden')
-                            }
+                                    // create JWT
+                                    const jwt = JWT.create(claims)
+
+                                    // return response to client
+                                    res.status(200).json({
+                                        jwt,
+                                        discord_user_id,
+                                        is_member,
+                                        is_officer,
+                                        nickname
+                                    })
+                                }
+                            })
+                            
                         } else {
 
                             // user already exists in the db

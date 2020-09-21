@@ -54,7 +54,7 @@ class Bot {
 
             const is_member = this.checkIfUserIsMember(discord_user_id)
             const is_officer = this.checkIfUserIsOfficer(discord_user_id)
-            const nickname = this.getUserNickname(discord_user_id)
+            const nickname = this.getUserNickname(discord_user_id) || member.user.username
 
             connection.execute('UPDATE `users` SET `member` = ?, `officer` = ?, `nickname` = ? WHERE `discord_user_id` = ?', [is_member, is_officer, nickname, discord_user_id], (err, results, fields) => {
                 if (err) {
