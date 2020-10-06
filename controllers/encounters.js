@@ -1,5 +1,4 @@
 const JWT = require('../util/jwt')
-const e = require('express')
 
 const getEncounterHealers = (encounter_id, connection) => {
     return new Promise((resolve, reject) => {

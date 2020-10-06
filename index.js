@@ -8,6 +8,7 @@ const port = 3000
 
 // controllers
 const accountController = require('./controllers/account')
+const adminController = require('./controllers/admin')
 const attendanceController = require('./controllers/attendance')
 const availabilityController = require('./controllers/availability')
 const bankController = require('./controllers/bank')
@@ -65,6 +66,9 @@ app.get('/', (req, res) => res.send('Professionality API v2'))
 app.post('/account/login', (req, res) => accountController.login(req, res, connection, bot))
 app.post('/account/verify', (req, res) => accountController.verify(req, res))
 app.get('/account/get', (req, res) => accountController.get(req, res, connection))
+
+// admin
+app.post('/admin/officerRoles/get', (req, res) => adminController.getOfficerRoles(req, res, connection))
 
 // attendance
 app.post('/attendance/signup', (req, res) => attendanceController.signup(req, res, connection, bot))
