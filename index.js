@@ -71,6 +71,8 @@ app.get('/account/get', (req, res) => accountController.get(req, res, connection
 app.post('/admin/roles/get', (req, res) => adminController.getRoles(req, res, connection))
 app.post('/admin/roles/add', (req, res) => adminController.addRole(req, res, connection))
 app.post('/admin/roles/delete', (req, res) => adminController.deleteRole(req, res, connection))
+app.post('/admin/officerRole/add', (req, res) => adminController.addOfficerRole(req, res, connection))
+app.post('/admin/officerRole/delete', (req, res) => adminController.deleteOfficerRole(req, res, connection))
 
 
 // attendance
