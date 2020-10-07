@@ -1,5 +1,5 @@
 const getPugs = (req, res, connection) => {
-    connection.query('SELECT id FROM events WHERE primary_raid = TRUE ORDER BY start DESC LIMIT 5', (err, results, fieldS) => {
+    connection.query('SELECT id FROM events WHERE primary_raid = TRUE AND start < NOW() ORDER BY start DESC LIMIT 5', (err, results, fieldS) => {
         if (err) {
             res.status(500).send('Server error')
         } else {
@@ -31,7 +31,7 @@ const getPugs = (req, res, connection) => {
 }
 
 const getMembers = (req, res, connection) => {
-    connection.query('SELECT id FROM events WHERE primary_raid = TRUE ORDER BY start DESC LIMIT 5', (err, results, fieldS) => {
+    connection.query('SELECT id FROM events WHERE primary_raid = TRUE AND start < NOW() ORDER BY start DESC LIMIT 5', (err, results, fieldS) => {
         if (err) {
             res.status(500).send('Server error')
         } else {
@@ -62,7 +62,7 @@ const getMembers = (req, res, connection) => {
 }
 
 const getOfficers = (req, res, connection) => {
-    connection.query('SELECT id FROM events WHERE primary_raid = TRUE ORDER BY start DESC LIMIT 5', (err, results, fieldS) => {
+    connection.query('SELECT id FROM events WHERE primary_raid = TRUE AND start < NOW() ORDER BY start DESC LIMIT 5', (err, results, fieldS) => {
         if (err) {
             res.status(500).send('Server error')
         } else {
