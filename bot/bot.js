@@ -273,7 +273,7 @@ class Bot {
 
     // post new bank request
     postNewBankRequest = () => {
-        this.bot.channels.cache.get(officer_channel_id).send(`@${guild_banker_role_id} new bank request posted.`)
+        this.bot.channels.cache.get(officer_channel_id).send(`<@&${guild_banker_role_id}> new bank request posted.`)
     }
 }
 
