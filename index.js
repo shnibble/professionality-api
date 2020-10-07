@@ -68,7 +68,10 @@ app.post('/account/verify', (req, res) => accountController.verify(req, res))
 app.get('/account/get', (req, res) => accountController.get(req, res, connection))
 
 // admin
-app.post('/admin/officerRoles/get', (req, res) => adminController.getOfficerRoles(req, res, connection))
+app.post('/admin/roles/get', (req, res) => adminController.getRoles(req, res, connection))
+app.post('/admin/roles/add', (req, res) => adminController.addRole(req, res, connection))
+app.post('/admin/roles/delete', (req, res) => adminController.deleteRole(req, res, connection))
+
 
 // attendance
 app.post('/attendance/signup', (req, res) => attendanceController.signup(req, res, connection, bot))
