@@ -26,7 +26,8 @@ const getMembers = (req, res, connection) => {
         if (err) {
             res.status(500).send('Server error')
         } else {
-            const primary_raids = results.join(',')
+            const primary_raids_array = results.map(row => row.id)
+            const primary_raids = primary_raids_array.join(',')
             console.log('primary_raids = ', primary_raids)
             const sql = `SELECT u.*, (SELECT COUNT(*) FROM attendance WHERE discord_user_id = u.discord_user_id AND event_id IN (${primary_raids})) AS attendance FROM users u WHERE u.member = TRUE AND u.officer = FALSE ORDER BY u.nickname`
             console.log('sql = ', sql)
