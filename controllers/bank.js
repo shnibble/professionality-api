@@ -394,7 +394,7 @@ const getRequests = (req, res, connection) => {
     })
 }
 
-const addRequest = (req, res, Connection) => {
+const addRequest = (req, res, connection, bot) => {
     // validate parameters
     const { jwt, message, timeframe } = req.body
 
@@ -417,6 +417,7 @@ const addRequest = (req, res, Connection) => {
                         console.error(err)
                         res.status(500).send('Server error')
                     } else {
+                        bot.postNewBankRequest()
                         res.status(200).send('Success')
                     }
                 })

@@ -5,6 +5,7 @@ const token = process.env.DISCORD_BOT_TOKEN
 const server_id = process.env.DISCORD_SERVER_ID
 const member_role_id = process.env.DISCORD_MEMBER_ROLE_ID
 const officer_role_id = process.env.DISCORD_OFFICER_ROLE_ID
+const guild_banker_role_id = process.env.DISCORD_GUILD_BANKER_ROLE_ID
 const officer_channel_id = process.env.DISCORD_OFFICER_CHANNEL_ID
 const events_channel_id = process.env.DISCORD_EVENTS_CHANNEL_ID
 require('moment-timezone')
@@ -267,9 +268,12 @@ class Bot {
                     console.error(err)
                 })
             }
-        })
+        })   
+    }
 
-        
+    // post new bank request
+    postNewBankRequest = () => {
+        this.bot.channels.cache.get(officer_channel_id).send(`@${guild_banker_role_id} new bank request posted.`)
     }
 }
 
