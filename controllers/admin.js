@@ -33,7 +33,7 @@ const getRoles = (req, res, connection) => {
     }
 }
 
-const addrole = (req, res, connection) => {
+const addRole = (req, res, connection) => {
     // validate parameters
     const { jwt, name } = req.body
 
@@ -101,6 +101,6 @@ const deleteRole = (req, res, connection) => {
 
 module.exports = {
     getRoles,
-    addrole,
+    addRole,
     deleteRole
 }
