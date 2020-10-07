@@ -26,9 +26,9 @@ const getMembers = (req, res, connection) => {
         if (err) {
             res.status(500).send('Server error')
         } else {
-            const primary_raids = results.join()
+            const primary_raids = results
             
-            connection.execute('SELECT u.*, (SELECT COUNT(*) FROM attendance WHERE discord_user_id = u.discord_user_id AND event_id IN (?)) AS attendance FROM users u WHERE u.member = TRUE AND u.officer = FALSE ORDER BY u.nickname', [primary_raids], (err, results, fields) => {
+            connection.execute('SELECT u.*, (SELECT COUNT(*) FROM attendance WHERE discord_user_id = u.discord_user_id AND event_id IN ?) AS attendance FROM users u WHERE u.member = TRUE AND u.officer = FALSE ORDER BY u.nickname', [primary_raids], (err, results, fields) => {
                 if (err) {
                     console.error(err)
                     res.status(500).send('Server error')
