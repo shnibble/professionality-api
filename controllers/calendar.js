@@ -111,8 +111,8 @@ const getPast = (req, res, connection) => {
 const add = (req, res, connection, bot) => {
 
     // validate parameters
-    const { jwt, title, start } = req.body
-    if (typeof jwt === 'undefined' || typeof title === 'undefined', typeof start === 'undefined') {
+    const { jwt, title, start, primary } = req.body
+    if (typeof jwt === 'undefined' || typeof title === 'undefined' || typeof start === 'undefined' || typeof primary === 'undefined') {
         res.status(400).send('Bad request')
     } else {
         // verify jwt
@@ -123,7 +123,7 @@ const add = (req, res, connection, bot) => {
             if (jwt_data.body.is_officer) {
 
                 // insert event
-                connection.execute('INSERT INTO `events` (title, start) VALUES (?, ?)', [title, start], (err, result, fields) => {
+                connection.execute('INSERT INTO `events` (title, start, primary_raid) VALUES (?, ?, ?)', [title, start, primary], (err, result, fields) => {
                     if (err) {
                         console.error(err)
                         res.status(500).send('Server error')
