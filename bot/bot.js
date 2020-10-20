@@ -277,7 +277,7 @@ class Bot {
         characters.forEach((character, index) => {
             result += character.name
             if (index < characters.length - 1) {
-                result += "<br>"
+                result += "\n"
             }
         })
 
