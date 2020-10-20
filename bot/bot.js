@@ -274,6 +274,9 @@ class Bot {
     formatAttendanceField = (characters) => {
         let result = ""
         
+        if (!characters.length) {
+            return "-"
+        }
         characters.forEach((character, index) => {
             result += character.name
             if (index < characters.length - 1) {
