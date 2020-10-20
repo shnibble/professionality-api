@@ -72,7 +72,7 @@ const signup = (req, res, connection, bot) => {
                                                             res.status(200).send('Success')
 
                                                             // update discord message via bot
-                                                            bot.updateCalendarEvent(event_id)
+                                                            bot.updateCalendarEvent2(event_id)
                                                         }
                                                     })
 
@@ -87,7 +87,7 @@ const signup = (req, res, connection, bot) => {
                                                             res.status(200).send('Success')
 
                                                             // update discord message via bot
-                                                            bot.updateCalendarEvent(event_id)
+                                                            bot.updateCalendarEvent2(event_id)
                                                         }
                                                     })
                                                 }
@@ -155,7 +155,7 @@ const callout = (req, res, connection, bot) => {
                                                 res.status(200).send('Success')
 
                                                 // update discord message via bot
-                                                bot.updateCalendarEvent(event_id)
+                                                bot.updateCalendarEvent2(event_id)
                                             }
                                         })
 
@@ -170,7 +170,7 @@ const callout = (req, res, connection, bot) => {
                                                 res.status(200).send('Success')
 
                                                 // update discord message via bot
-                                                bot.updateCalendarEvent(event_id)
+                                                bot.updateCalendarEvent2(event_id)
                                             }
                                         })
                                     }
@@ -235,7 +235,7 @@ const cancel = (req, res, connection, bot) => {
                                             res.status(200).send('Success')
 
                                             // update discord message via bot
-                                            bot.updateCalendarEvent(event_id)
+                                            bot.updateCalendarEvent2(event_id)
                                         }
                                     })
                                 }

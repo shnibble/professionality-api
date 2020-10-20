@@ -271,6 +271,84 @@ class Bot {
         })   
     }
 
+    formatAttendanceField = (characters) => {
+        let result = ""
+        
+        characters.forEach((character, index) => {
+            result += character.name
+            if (index < characters.length - 1) {
+                result += "<br>"
+            }
+        })
+
+        return result
+    }
+
+    updateCalendarEvent2 = (event_id) => {
+        this.connection.execute(`SELECT e.id, e.title, e.start, e.message_id, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND signed_up IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_sign_ups, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND called_out IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_call_outs FROM events e WHERE e.id = ?`, [event_id], (err, result, fields) => {
+            if (err || result.length === 0) {
+                console.error('Event not found to update')
+            } else {
+
+                const event = result[0]
+
+                this.connection.execute(`
+                    SELECT a.signed_up, a.called_out, a.role_id, a.tentative, a.late, c.name, c.class_id, u.nickname
+                    FROM attendance a
+                        LEFT JOIN characters c
+                        ON c.id = a.character_id
+                        INNER JOIN users u
+                        ON u.discord_user_id = a.discord_user_id
+                    WHERE a.event_id = ? AND a.discord_user_id IN (SELECT discord_user_id FROM users)
+                `, [event_id], (err, results, fields) => {
+                    if (err) {
+                        console.error('Server error')
+                    } else {
+
+                        const attendance = results
+                        const date = moment(event.start)
+                        const tanks = attendance.filter(att => att.signed_up && att.role_id === 4)
+                        const hunters = attendance.filter(att => att.signed_up && att.rolde_id !== 4 && att.class_id === 3)
+                        const priests = attendance.filter(att => att.signed_up && att.role_id !== 4 && att.class_id === 5)
+                        const warriors = attendance.filter(att => att.signed_up && att.role_id !== 4 && att.class_id === 1)
+                        const mages = attendance.filter(att => att.signed_up && att.role_id !== 4 && att.class_id === 8)
+                        const paladins = attendance.filter(att => att.signed_up && att.role_id !== 4 && att.class_id === 2)
+                        const rogues = attendance.filter(att => att.signed_up && att.role_id !== 4 && att.class_id === 4)
+                        const warlocks = attendance.filter(att => att.signed_up && att.role_id !== 4 && att.class_id === 9)
+                        const druids = attendance.filter(att => att.signed_up && att.role_id !== 4 && att.class_id === 11)
+                        const tentative = attendance.filter(att => att.signed_up && att.tentative)
+                        const late = attendance.filter(att => att.signed_up && att.late)
+
+                        const embed = new Discord.MessageEmbed()
+                        .setColor('#0099ff')
+                        .setTitle(`${event.title} - ${date.tz('America/New_York').format('dddd MM/DD @ h:mm a')} (server time)`)
+                        .setDescription(`Sign up or call out here: https://professionality.app/event/${event.id}`)
+                        .addField('Tanks', this.formatAttendanceField(tanks), true)
+                        .addField('Hunters', this.formatAttendanceField(hunters), true)
+                        .addField('Priests', this.formatAttendanceField(priests), true)
+                        .addField('Warriors', this.formatAttendanceField(warriors), true)
+                        .addField('Mages', this.formatAttendanceField(mages), true)
+                        .addField('Paladins', this.formatAttendanceField(paladins), true)
+                        .addField('Rogues', this.formatAttendanceField(rogues), true)
+                        .addField('Warlocks', this.formatAttendanceField(warlocks), true)
+                        .addField('Druids', this.formatAttendanceField(druids), true)
+                        .addField('Signed Up | Called Out', `${event.total_sign_ups} | ${event.total_call_outs}`, true)
+                        .addField('Tentative', this.formatAttendanceField(tentative), true)
+                        .addField('Late', this.formatAttendanceField(late), true)
+
+                        this.bot.channels.cache.get(events_channel_id).messages.fetch(event.message_id)
+                        .then(message => {
+                            message.edit(embed)
+                        })
+                        .catch(err => {
+                            console.error(err)
+                        })
+                    }
+                })
+            }
+        })
+    }
+
     // post new bank request
     postNewBankRequest = () => {
         this.bot.channels.cache.get(officer_channel_id).send(`<@&${guild_banker_role_id}> new bank request posted.`)
