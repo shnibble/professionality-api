@@ -1,3 +1,5 @@
+const { forEach } = require('mysql2/lib/constants/charset_encodings')
+const { connect } = require('../db/connect')
 const JWT = require('../util/jwt')
 
 const getActive = (req, res, connection) => {
@@ -345,6 +347,48 @@ const editProfessions = (req, res, connection) => {
     }
 }
 
+const updateSortOrder = (req, res, connection) => {
+
+    // validate parameters
+    const { jwt, character_ids } = req.body
+
+    if (typeof jwt === 'undefined' || typeof character_ids === 'undefined') {
+        res.status(400).send('Bad request')
+    } else if (typeof character_ids !== 'array') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // verify all characters belong to user
+            connection.execute('SELECT id FROM characters WHERE id IN ? AND discord_user_id = ?', [character_ids, jwt_data.body.discord_user_id], (err, results) => {
+                if (err) {
+                    res.status(500).send('Server error')
+                } else if (results.length !== character_ids.length) {
+                    res.status(400).send('Bad request')
+                } else {
+
+                    // update sort order
+                    for (let i = 0; i < character_ids.length; i++) {
+                        connection.execute('UPDATE characters SET sort_order = ? WHERE id = ?', [i, character_ids[i]], (err) => {
+                            if (err) {
+                                res.status(500).send('Server error')
+                            } else {
+                                res.status(200).send('Success')
+                            }
+                        })
+                    }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
 module.exports = {
     getActive,
     add,
@@ -353,5 +397,6 @@ module.exports = {
     editClass,
     editRole,
     editAttunements,
-    editProfessions
+    editProfessions,
+    updateSortOrder
 }

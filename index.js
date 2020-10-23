@@ -117,6 +117,7 @@ app.post('/character/edit/class', (req, res) => characterController.editClass(re
 app.post('/character/edit/role', (req, res) => characterController.editRole(req, res, connection))
 app.post('/character/edit/attunements', (req, res) => characterController.editAttunements(req, res, connection))
 app.post('/character/edit/professions', (req, res) => characterController.editProfessions(req, res, connection))
+app.post('/character/edit/sort', (req, res) => characterController.updateSortOrder(req, res, connection))
 
 // encounters
 app.get('/encounters/get', (req, res) => encountersContoller.get(req, res, connection))
