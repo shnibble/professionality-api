@@ -353,8 +353,13 @@ const updateSortOrder = (req, res, connection) => {
     const { jwt, character_ids } = req.body
 
     if (typeof jwt === 'undefined' || typeof character_ids === 'undefined') {
+        console.log('Missing parameters')
+        console.log('jwt:', jwt)
+        console.log('character_ids:', character_ids)
         res.status(400).send('Bad request')
     } else if (typeof character_ids !== 'array') {
+        console.log('Not an array')
+        console.log('typeof:', typeof character_ids)
         res.status(400).send('Bad request')
     } else {
 
@@ -367,6 +372,8 @@ const updateSortOrder = (req, res, connection) => {
                 if (err) {
                     res.status(500).send('Server error')
                 } else if (results.length !== character_ids.length) {
+                    console.log('Invalid characters')
+                    console.log(results)
                     res.status(400).send('Bad request')
                 } else {
 
