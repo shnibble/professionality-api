@@ -352,6 +352,8 @@ const updateSortOrder = (req, res, connection) => {
     // validate parameters
     const { jwt, character_ids } = req.body
 
+    console.log('character_ids:', character_ids)
+
     if (typeof jwt === 'undefined' || typeof character_ids === 'undefined') {
         res.status(400).send('Bad request')
     } else {
