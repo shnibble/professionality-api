@@ -363,6 +363,7 @@ const updateSortOrder = (req, res, connection) => {
             // verify all characters belong to user
             connection.execute('SELECT id FROM characters WHERE id IN ? AND discord_user_id = ?', [character_ids, jwt_data.body.discord_user_id], (err, results) => {
                 if (err) {
+                    console.error(err)
                     res.status(500).send('Server error')
                 } else if (results.length !== character_ids.length) {
                     console.log('Invalid characters')
@@ -374,6 +375,7 @@ const updateSortOrder = (req, res, connection) => {
                     for (let i = 0; i < character_ids.length; i++) {
                         connection.execute('UPDATE characters SET sort_order = ? WHERE id = ?', [i, character_ids[i]], (err) => {
                             if (err) {
+                                console.error(err)
                                 res.status(500).send('Server error')
                             } else {
                                 res.status(200).send('Success')
