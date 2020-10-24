@@ -15,7 +15,7 @@ const getPugs = (req, res, connection) => {
                     let pending = results.length
                     
                     results.map(row => {
-                        connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
+                        connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE ORDER BY sort_order', [row.discord_user_id], (err, result, fields) => {
                             row.characters = result
                             final_results.push(row)
 
@@ -46,7 +46,7 @@ const getMembers = (req, res, connection) => {
                     let pending = results.length
         
                     results.map(row => {
-                        connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
+                        connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE ORDER BY sort_order', [row.discord_user_id], (err, result, fields) => {
                             row.characters = result
                             final_results.push(row)
         
@@ -81,7 +81,7 @@ const getOfficers = (req, res, connection) => {
                     }
 
                     results.map(row => {
-                        connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [row.discord_user_id], (err, result, fields) => {
+                        connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE ORDER BY sort_order', [row.discord_user_id], (err, result, fields) => {
                             
                             row.characters = result
                             
