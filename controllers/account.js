@@ -161,7 +161,7 @@ const get = (req, res, connection) => {
                     let user = results[0]
 
                     // get characters
-                    connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE', [discord_user_id], (err2, results2, fields2) => {
+                    connection.execute('SELECT * FROM `characters` WHERE `discord_user_id` = ? AND `enabled` = TRUE ORDER BY sort_order', [discord_user_id], (err2, results2, fields2) => {
                         if (err2) {
                             console.error(err)
                             res.status(500).send('Server error')
