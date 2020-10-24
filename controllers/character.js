@@ -352,8 +352,6 @@ const updateSortOrder = (req, res, connection) => {
     // validate parameters
     const { jwt, character_ids } = req.body
 
-    console.log('character_ids:', character_ids)
-
     if (typeof jwt === 'undefined' || typeof character_ids === 'undefined') {
         res.status(400).send('Bad request')
     } else {
@@ -366,8 +364,7 @@ const updateSortOrder = (req, res, connection) => {
             const characters = character_ids.join()
             connection.execute(`SELECT id FROM characters WHERE id IN (${characters}) AND discord_user_id = ?`, [jwt_data.body.discord_user_id], (err, results) => {
                 if (err) {
-                    console.error(err)
-                    res.status(500).send('Server error 1')
+                    res.status(500).send('Server error')
                 } else if (results.length !== character_ids.length) {
                     res.status(400).send('Bad request')
                 } else {
@@ -376,9 +373,8 @@ const updateSortOrder = (req, res, connection) => {
                     for (let i = 0; i < character_ids.length; i++) {
                         connection.execute('UPDATE characters SET sort_order = ? WHERE id = ?', [i, character_ids[i]], (err) => {
                             if (err) {
-                                console.error(err)
-                                res.status(500).send('Server error 2')
-                            } else {
+                                res.status(500).send('Server error')
+                            } else if (i >= character_ids.length - 1) {
                                 res.status(200).send('Success')
                             }
                         })
