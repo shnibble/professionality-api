@@ -84,7 +84,7 @@ class Bot {
                     console.log(`User ${discord_user_id} (${discord_username}#${discord_discriminator}) left the Discord server and has been deleted from the database.`)
 
                     // report leave in discord officer channel
-                    this.bot.channels.cache.get(officer_channel_id).send(`User ${discord_user_id} (${discord_username}#${discord_discriminator}) left the Discord server.`)
+                    // this.bot.channels.cache.get(officer_channel_id).send(`User ${discord_user_id} (${discord_username}#${discord_discriminator}) left the Discord server.`)
                 }
             })
         })
