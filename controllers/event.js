@@ -12,7 +12,7 @@ const get = (req, res, connection) => {
         // fetch event details
         connection.execute(
             `
-            SELECT e.*, a.signed_up, a.called_out, a.character_id, a.role_id, a.tentative, a.late, a.note,
+            SELECT e.*, a.signed_up, a.called_out, a.character_id, a.role_id, a.tentative, a.late, a.note, u.nickname AS raid_leader_name, 
             (SELECT COUNT(*) FROM attendance 
                 WHERE event_id = e.id 
                 AND discord_user_id IN (SELECT discord_user_id FROM users) 
@@ -49,6 +49,8 @@ const get = (req, res, connection) => {
             FROM events e 
             LEFT JOIN attendance a
                 ON e.id =  a.event_id AND a.discord_user_id = ?
+            LEFT JOIN users u
+                ON u.discord_user_id = e.raid_leader
             WHERE e.id = ?
             `,
             [discord_user_id, event_id], (err, results, fields) => {

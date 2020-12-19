@@ -108,8 +108,19 @@ const getOfficers = (req, res, connection) => {
     })
 }
 
+const getUsers = (req, res, connection) => {
+    connection.query('SELECT * FROM users ORDER BY nickname', (err, results, fieldS) => {
+        if (err) {
+            res.status(500).send('Server error')
+        } else {
+            res.status(200).json(results)
+        }
+    })
+}
+
 module.exports = {
     getPugs,
     getMembers,
-    getOfficers
+    getOfficers,
+    getUsers
 }

@@ -105,6 +105,7 @@ app.post('/bank/requests/comment/add', (req, res) => bankController.addRequestCo
 app.get('/calendar/get', (req, res) => calendarController.get(req, res, connection))
 app.get('/calendar/past', (req, res) => calendarController.getPast(req, res, connection))
 app.post('/calendar/add', (req, res) => calendarController.add(req, res, connection, bot))
+app.post('/calendar/update', (req, res) => calendarController.update(req, res, connection, bot))
 app.post('/calendar/delete', (req, res) => calendarController.deleteEvent(req, res, connection, bot))
 
 // character
@@ -164,5 +165,6 @@ app.post('/pugepgp/character/deactivate', (req, res) => pugepgpController.deacti
 app.get('/roster/pugs', (req, res) => rosterController.getPugs(req, res, connection))
 app.get('/roster/members', (req, res) => rosterController.getMembers(req, res, connection))
 app.get('/roster/officers', (req, res) => rosterController.getOfficers(req, res, connection))
+app.get('/roster/users', (req, res) => rosterController.getUsers(req, res, connection))
 
 app.listen(port, () => console.log(`Professionality-api is listening on port ${port}.`))

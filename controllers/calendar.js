@@ -112,9 +112,15 @@ const add = (req, res, connection, bot) => {
 
     // validate parameters
     const { jwt, title, start, primary } = req.body
-    if (typeof jwt === 'undefined' || typeof title === 'undefined' || typeof start === 'undefined' || typeof primary === 'undefined') {
+    let { raid_leader } = req.body
+    if (typeof jwt === 'undefined' || typeof title === 'undefined' || typeof start === 'undefined' || typeof primary === 'undefined' || typeof raid_leader === 'undefined') {
         res.status(400).send('Bad request')
     } else {
+
+        if (raid_leader === '' || raid_leader === 'null' || raid_leader === 'NULL') {
+            raid_leader = null
+        }
+
         // verify jwt
         JWT.verify(jwt)
         .then(jwt_data => {
@@ -123,7 +129,7 @@ const add = (req, res, connection, bot) => {
             if (jwt_data.body.is_officer) {
 
                 // insert event
-                connection.execute('INSERT INTO `events` (title, start, primary_raid) VALUES (?, ?, ?)', [title, start, primary], (err, result, fields) => {
+                connection.execute('INSERT INTO `events` (title, start, primary_raid, raid_leader) VALUES (?, ?, ?, ?)', [title, start, primary, raid_leader], (err, result, fields) => {
                     if (err) {
                         console.error(err)
                         res.status(500).send('Server error')
@@ -134,6 +140,44 @@ const add = (req, res, connection, bot) => {
                             start
                         }
                         bot.postNewCalendarEvent(event)
+                        res.status(200).send('Success')
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const update = (req, res, connection, bot) => {
+
+    // validate parameters
+    const { jwt, event_id, title, start, primary } = req.body
+    let { raid_leader } = req.body
+    if (typeof jwt === 'undefined' || typeof event_id === 'undefined' || typeof title === 'undefined' || typeof start === 'undefined' || typeof primary === 'undefined' || typeof raid_leader === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        if (raid_leader === '' || raid_leader === 'null' || raid_leader === 'NULL') {
+            raid_leader = null
+        }
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm officer rank
+            if (jwt_data.body.is_officer) {
+
+                // update event
+                connection.execute('UPDATE `events` SET title = ?, start = ?, primary_raid = ?, raid_leader = ? WHERE id = ?', [title, start, primary, raid_leader, event_id], (err, result, fields) => {
+                    if (err) {
+                        console.error(err)
+                        res.status(500).send('Server error')
+                    } else {
+                        bot.updateCalendarEvent(event_id)
                         res.status(200).send('Success')
                     }
                 })
@@ -194,5 +238,6 @@ module.exports = {
     get,
     getPast,
     add,
+    update,
     deleteEvent
 }
