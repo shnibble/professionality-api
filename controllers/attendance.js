@@ -187,7 +187,6 @@ const callout = (req, res, connection, bot) => {
     }
 }
 
-
 const cancel = (req, res, connection, bot) => {
     
     // validate parameters
@@ -251,8 +250,127 @@ const cancel = (req, res, connection, bot) => {
     }
 }
 
+
+const benchUser = (req, res, connection) => {
+    
+    // validate parameters
+    const { jwt, event_id, user_id } = req.body
+    if (typeof jwt === 'undefined' || typeof event_id === 'undefined' || typeof user_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm event exists
+            connection.execute('SELECT * FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+
+                    // if length is zero then the event doesn't exist
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // confirm user is officer or raid leader
+                        if (!jwt_data.body.is_officer && jwt_data.body.discord_user_id !== results[0].raid_leader) {
+                            res.status(400).send('Bad request')
+                        } else {
+
+                            // check if a attendance record exists
+                            connection.execute('SELECT * FROM `attendance` WHERE event_id = ? AND discord_user_id = ?', [event_id, user_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    
+                                    // bench user
+                                    connection.execute('UPDATE `attendance` SET bench = TRUE WHERE event_id = ? AND discord_user_id = ?', [event_id, user_id], (err, results, fields) => {
+                                        if (err) {
+                                            console.error(err)
+                                            res.status(500).send('Server error')
+                                        } else {
+                                            res.status(200).send('Success')
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
+const unbenchUser = (req, res, connection) => {
+    
+    // validate parameters
+    const { jwt, event_id, user_id } = req.body
+    if (typeof jwt === 'undefined' || typeof event_id === 'undefined' || typeof user_id === 'undefined') {
+        res.status(400).send('Bad request')
+    } else {
+
+        // verify jwt
+        JWT.verify(jwt)
+        .then(jwt_data => {
+
+            // confirm event exists
+            connection.execute('SELECT * FROM `events` WHERE id = ?', [event_id], (err, results, fields) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).send('Server error')
+                } else {
+
+                    // if length is zero then the event doesn't exist
+                    if (results.length === 0) {
+                        res.status(400).send('Bad request')
+                    } else {
+
+                        // confirm user is officer or raid leader
+                        if (!jwt_data.body.is_officer && jwt_data.body.discord_user_id !== results[0].raid_leader) {
+                            res.status(400).send('Bad request')
+                        } else {
+
+                            // check if a attendance record exists
+                            connection.execute('SELECT * FROM `attendance` WHERE event_id = ? AND discord_user_id = ?', [event_id, user_id], (err, results, fields) => {
+                                if (err) {
+                                    console.error(err)
+                                    res.status(500).send('Server error')
+                                } else {
+                                    
+                                    // unbench user
+                                    connection.execute('UPDATE `attendance` SET bench = FALSE WHERE event_id = ? AND discord_user_id = ?', [event_id, user_id], (err, results, fields) => {
+                                        if (err) {
+                                            console.error(err)
+                                            res.status(500).send('Server error')
+                                        } else {
+                                            res.status(200).send('Success')
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+        })
+        .catch(err => {
+            res.status(400).send('Invalid token')
+        })
+    }
+}
+
 module.exports = {
     signup,
     callout,
-    cancel
+    cancel,
+    benchUser,
+    unbenchUser
 }

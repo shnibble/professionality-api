@@ -177,7 +177,7 @@ const update = (req, res, connection, bot) => {
                         console.error(err)
                         res.status(500).send('Server error')
                     } else {
-                        bot.updateCalendarEvent(event_id)
+                        bot.updateCalendarEvent2(event_id)
                         res.status(200).send('Success')
                     }
                 })

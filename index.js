@@ -79,6 +79,8 @@ app.post('/admin/officerRole/delete', (req, res) => adminController.deleteOffice
 app.post('/attendance/signup', (req, res) => attendanceController.signup(req, res, connection, bot))
 app.post('/attendance/callout', (req, res) => attendanceController.callout(req, res, connection, bot))
 app.post('/attendance/cancel', (req, res) => attendanceController.cancel(req, res, connection, bot))
+app.post('/attendance/bench', (req, res) => attendanceController.benchUser(req, res, connection))
+app.post('/attendance/unbench', (req, res) => attendanceController.unbenchUser(req, res, connection))
 
 // availability
 app.post('/availability/update', (req, res) => availabilityController.update(req, res, connection))
