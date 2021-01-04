@@ -290,7 +290,7 @@ class Bot {
 
     updateCalendarEvent2 = (event_id) => {
         this.connection.execute(`
-            SELECT e.id, e.title, e.start, e.message_id, e.raid_leader, u.nickname AS raid_leader_name, e.soft_res (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND signed_up IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_sign_ups, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND called_out IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_call_outs 
+            SELECT e.id, e.title, e.start, e.message_id, e.raid_leader, u.nickname AS raid_leader_name, e.soft_res, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND signed_up IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_sign_ups, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND called_out IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_call_outs 
             FROM events e 
             LEFT JOIN users u
             ON u.discord_user_id = e.raid_leader
