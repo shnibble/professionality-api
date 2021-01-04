@@ -112,13 +112,17 @@ const add = (req, res, connection, bot) => {
 
     // validate parameters
     const { jwt, title, start, primary } = req.body
-    let { raid_leader } = req.body
+    let { raid_leader, soft_res } = req.body
     if (typeof jwt === 'undefined' || typeof title === 'undefined' || typeof start === 'undefined' || typeof primary === 'undefined' || typeof raid_leader === 'undefined') {
         res.status(400).send('Bad request')
     } else {
 
         if (raid_leader === '' || raid_leader === 'null' || raid_leader === 'NULL') {
             raid_leader = null
+        }
+
+        if (soft_res === '' || soft_res === 'null' || soft_res === 'NULL') {
+            soft_res = null
         }
 
         // verify jwt
@@ -129,7 +133,7 @@ const add = (req, res, connection, bot) => {
             if (jwt_data.body.is_officer) {
 
                 // insert event
-                connection.execute('INSERT INTO `events` (title, start, primary_raid, raid_leader) VALUES (?, ?, ?, ?)', [title, start, primary, raid_leader], (err, result, fields) => {
+                connection.execute('INSERT INTO `events` (title, start, primary_raid, raid_leader, soft_res) VALUES (?, ?, ?, ?, ?)', [title, start, primary, raid_leader, soft_res], (err, result, fields) => {
                     if (err) {
                         console.error(err)
                         res.status(500).send('Server error')
@@ -137,7 +141,8 @@ const add = (req, res, connection, bot) => {
                         const event = {
                             id: result.insertId,
                             title,
-                            start
+                            start,
+                            soft_res
                         }
                         bot.postNewCalendarEvent(event)
                         res.status(200).send('Success')
@@ -155,13 +160,17 @@ const update = (req, res, connection, bot) => {
 
     // validate parameters
     const { jwt, event_id, title, start, primary } = req.body
-    let { raid_leader } = req.body
+    let { raid_leader, soft_res } = req.body
     if (typeof jwt === 'undefined' || typeof event_id === 'undefined' || typeof title === 'undefined' || typeof start === 'undefined' || typeof primary === 'undefined' || typeof raid_leader === 'undefined') {
         res.status(400).send('Bad request')
     } else {
 
         if (raid_leader === '' || raid_leader === 'null' || raid_leader === 'NULL') {
             raid_leader = null
+        }
+
+        if (soft_res === '' || soft_res === 'null' || soft_res === 'NULL') {
+            soft_res = null
         }
 
         // verify jwt
@@ -172,7 +181,7 @@ const update = (req, res, connection, bot) => {
             if (jwt_data.body.is_officer) {
 
                 // update event
-                connection.execute('UPDATE `events` SET title = ?, start = ?, primary_raid = ?, raid_leader = ? WHERE id = ?', [title, start, primary, raid_leader, event_id], (err, result, fields) => {
+                connection.execute('UPDATE `events` SET title = ?, start = ?, primary_raid = ?, raid_leader = ?, soft_res = ? WHERE id = ?', [title, start, primary, raid_leader, soft_res, event_id], (err, result, fields) => {
                     if (err) {
                         console.error(err)
                         res.status(500).send('Server error')

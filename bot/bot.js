@@ -223,6 +223,7 @@ class Bot {
         .setDescription(`Sign up or call out here: https://professionality.app/event/${event.id}`)
         .addField('Sign Ups:', '0', true)
         .addField('Call Outs:', '0', true)
+        .addField('Soft Reserve', (event.soft_res) ? `<${event.soft_res}>` : 'N/A', false)
 
         this.bot.channels.cache.get(events_channel_id).send(embed)
         .then(message => {
@@ -288,7 +289,13 @@ class Bot {
     }
 
     updateCalendarEvent2 = (event_id) => {
-        this.connection.execute(`SELECT e.id, e.title, e.start, e.message_id, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND signed_up IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_sign_ups, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND called_out IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_call_outs FROM events e WHERE e.id = ?`, [event_id], (err, result, fields) => {
+        this.connection.execute(`
+            SELECT e.id, e.title, e.start, e.message_id, e.raid_leader, u.nickname AS raid_leader_name, e.soft_res (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND signed_up IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_sign_ups, (SELECT COUNT(*) FROM attendance WHERE event_id = e.id AND called_out IS NOT NULL AND discord_user_id IN (SELECT discord_user_id FROM users)) as total_call_outs 
+            FROM events e 
+            LEFT JOIN users u
+            ON u.discord_user_id = e.raid_leader
+            WHERE e.id = ?
+        `, [event_id], (err, result, fields) => {
             if (err || result.length === 0) {
                 console.error('Event not found to update')
             } else {
@@ -338,6 +345,7 @@ class Bot {
                         .addField('Signed Up | Called Out', `${event.total_sign_ups} | ${event.total_call_outs}`, true)
                         .addField('Tentative', this.formatAttendanceField(tentative), true)
                         .addField('Late', this.formatAttendanceField(late), true)
+                        .addField('Soft Reserve', (event.soft_res) ? `<${event.soft_res}>` : 'N/A', false)
 
                         this.bot.channels.cache.get(events_channel_id).messages.fetch(event.message_id)
                         .then(message => {
